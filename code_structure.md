@@ -14,7 +14,7 @@ création des classes "routers" et "interfaces" pour stockers touts les infos su
 - Ouverture / lecture du fichier d'intention
 - recherche des routeurs dans l'arborescence du GNS
 - récupération des noms des routeurs (+ vérification du nb) et (création d'une liste de classes ?)
-(- vérification des liens)
+- (vérification des liens)
 - configuration des routeurs = rédaction des .cfg de chaque routeur et placement dans l'arborescence
 
 ### CONFIGURATION D'UN ROUTEUR = RÉDACTION DES .cfg:
