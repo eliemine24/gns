@@ -8,7 +8,7 @@ class interface():
     def __init__(self, name):
         self.name = name
         self.address = ""
-        self.neighbor_address = ""
+        self.neighbors_address = []
         self.protocol = ""
 
     def __str__(self):
