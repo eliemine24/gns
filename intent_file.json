@@ -1,0 +1,172 @@
+{
+    "Intent":{
+
+    },
+    "Structure":{
+
+        "AS1":{
+
+            "AS_NAME" : "1111",
+
+            "ROUTERS":{
+                
+                "R1":{
+                    
+                    "ROUTER_ID" : "1.1.1.1",
+
+                    "INTERFACES":{
+
+                        "G1/0": {
+                            "ADDRESS": "1111:0:0:1::11/64",
+                            "NEIGHBORS_ADDRESS": ["1111:0:0:1::12/64"], 
+                            "PROTOCOL": "RIP"
+                        },
+
+                        "LOOPBACK": {
+                            "ADDRESS": "1111:0:0:3::111/64",
+                            "NEIGHBORS_ADDRESS": ["1111:0:0:3::113/64","1111:0:0:3::112/64"],
+                            "PROTOCOL": "IBGP"
+                        }
+
+                    }
+                },
+                
+                "R2":{
+                    
+                    "ROUTER_ID" : "2.2.2.2",
+
+                    "INTERFACES":{
+
+                        "G1/0": {
+                            "ADDRESS": "1111:0:0:1::12/64",
+                            "NEIGHBORS_ADDRESS": ["1111:0:0:1::11/64"], 
+                            "PROTOCOL": "RIP"
+                        },
+
+                        "G2/0": {
+                            "ADDRESS": "1111:0:0:2::21/64",
+                            "NEIGHBORS_ADDRESS": ["1111:0:0:2::22/64"],
+                            "PROTOCOL": "RIP"
+                        },
+
+                        "LOOPBACK": {
+                            "ADDRESS": "1111:0:0:3::112/64",
+                            "NEIGHBORS_ADDRESS": ["1111:0:0:3::111/64","1111:0:0:3::113/64"],
+                            "PROTOCOL": "IBGP"
+                        }
+
+                    }
+                },
+                
+                "R3":{
+                    
+                    "ROUTER_ID" : "3.3.3.3",
+
+                    "INTERFACES":{
+
+                        "G1/0": {
+                            "ADDRESS": "3333::31/64",
+                            "NEIGHBORS_ADDRESS": ["3333::32/64"], 
+                            "PROTOCOL": "EBGP"
+                        },
+
+                        "G2/0": {
+                            "ADDRESS": "1111:0:0:2::22/64",
+                            "NEIGHBORS_ADDRESS": ["1111:0:0:2::21/64"],
+                            "PROTOCOL": "RIP"
+                        },
+
+                        "LOOPBACK": {
+                            "ADDRESS": "1111:0:0:3::113/64",
+                            "NEIGHBORS_ADDRESS": ["1111:0:0:3::111/64","1111:0:0:3::112/64"],
+                            "PROTOCOL": "IBGP"
+                        }
+
+                    }
+                }
+            }
+        },
+        "AS2":{
+
+            "AS_NAME" : "2222",
+
+            "ROUTERS":{
+                
+                "R4":{
+                    
+                    "ROUTER_ID" : "4.4.4.4",
+
+                    "INTERFACES":{
+
+                        "G1/0": {
+                            "ADDRESS": "3333::32/64",
+                            "NEIGHBORS_ADDRESS": ["3333::31/64"], 
+                            "PROTOCOL": "EBGP"
+                        },
+
+                        "G2/0": {
+                            "ADDRESS": "2222:0:0:1::11/64",
+                            "NEIGHBORS_ADDRESS":["2222:0:0:1::12/64"],
+                            "PROTOCOL": "OSPF"
+                        },
+
+                        "LOOPBACK": {
+                            "ADDRESS": "2222:0:0:3::114/64",
+                            "NEIGHBORS_ADDRESS": ["2222:0:0:3::115/64","2222:0:0:3::116/64"],
+                            "PROTOCOL": "IBGP"
+                        }
+
+                    }
+                },
+                
+                "R5":{
+                    
+                    "ROUTER_ID" : "5.5.5.5",
+
+                    "INTERFACES":{
+
+                        "G1/0": {
+                            "ADDRESS": "2222:0:0:2::21/64",
+                            "NEIGHBORS_ADDRESS": ["2222:0:0:2::22/64"],
+                            "PROTOCOL": "OSPF"
+                        },
+
+                        "G2/0": {
+                            "ADDRESS": "2222:0:0:1::12/64",
+                            "NEIGHBORS_ADDRESS": ["2222:0:0:1::11/64"], 
+                            "PROTOCOL": "OSPF"
+                        },
+
+                        "LOOPBACK": {
+                            "ADDRESS": "2222:0:0:3::115/64",
+                            "NEIGHBORS_ADDRESS": ["2222:0:0:3::114/64","2222:0:0:3::116/64"],
+                            "PROTOCOL": "IBGP"
+                        }
+
+                    }
+                },
+                
+                "R6":{
+                    
+                    "ROUTER_ID" : "6.6.6.6",
+
+                    "INTERFACES":{
+
+                        "G1/0": {
+                            "ADDRESS": "2222:0:0:2::22/64",
+                            "NEIGHBORS_ADDRESS": ["2222:0:0:2::21/64"], 
+                            "PROTOCOL": "OSPF"
+                        },
+
+                        "LOOPBACK": {
+                            "ADDRESS": "2222:0:0:3::116/64",
+                            "NEIGHBORS_ADDRESS": ["2222:0:0:3::114/64","2222:0:0:3::115/64"],
+                            "PROTOCOL": "IBGP"
+                        }
+
+                    }
+                }
+            }
+        }
+    }
+}
