@@ -1,4 +1,4 @@
-#Structure du code
+# Structure du code
 
 **ressources** : architecture déjà prête (routeurs, interfaces, liens), arborescence GNS ("./project_name/project-files/dynamips/router_ids/configs/iX_startup_config.cfg"), fichier network intent (json)
 
