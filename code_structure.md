@@ -40,10 +40,20 @@ On dispose de classes `routers` et `interfaces` pour stockers touts les infos su
 
 ### Classes
 
-[ ] router : name, interfaces_number, interfaces_list, protocols_list
-[ ] interface : name, address, neighbors_address, protocol
+- `router` : name, interfaces_number, interfaces_list, protocols_list
+- `interface` : name, address, neighbors_address, protocol
 
 ### Fonctions
 
-[ ] write_config(router, path_to_router) : fonction générale qui écrit une configuration pour un router, contient d'autres fonctions
-    [ ] 
+- `write_config(router, path_to_router, out_file)` : fonction générale qui écrit une configuration pour un router dans un fichier cfg, contient d'autres fonctions
+    - `write_header(router)` : écrit l'en-tête de config
+    - `write_interfaces_config(router)` : gère la configuration de tous les interfaces du router (en fonction des protocoles)
+        - `write_loopback(interface)` : écrit la partie loopback
+        - `write_FE(interface)` : écrit la configuration de fast ethernet
+        - `write_GE(interface)` : pareil pour GE
+    - `write_bgp_config` : 
+        - find a way to write this fckn bgp table 
+    - `write_ipv4_address_family` écrit la config @family_ipv4 (non utilisé mais probablement à écrire quand même)
+    - `write_ipv6_address_family` : écrit la config ipv6 family (voir fichier de config)
+        - problème pour plus tard
+- `drag_and_drop_bot(cfg_file, out_path)` : place le fichier généré dans la config gns
