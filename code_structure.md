@@ -33,3 +33,17 @@ On dispose de classes `routers` et `interfaces` pour stockers touts les infos su
 - liste des interfaces
 - liste des routers par protocole
 - address-family (?)
+
+
+
+## À CODER
+
+### Classes
+
+[ ] router : name, interfaces_number, interfaces_list, protocols_list
+[ ] interface : name, address, neighbors_address, protocol
+
+### Fonctions
+
+[ ] write_config(router, path_to_router) : fonction générale qui écrit une configuration pour un router, contient d'autres fonctions
+    [ ] 
