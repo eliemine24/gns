@@ -4,36 +4,117 @@
 
 from router import Router
 from interface import Interface
+from datetime import datetime
 
 
 def write_config(router, path_to_router, out_file):
     """Écrit la configuration complète d'un routeur dans un fichier .cfg."""
-    pass
+    conf = open(out_file, 'x')
+    write_header(conf, router)
+    write_interfaces_config(conf, router)
+    #write_bgp_config(conf, router)
+    #write_ipv4_address_family(conf, router)
+    #write_ipv6_address_family(conf, router)
+    conf.close()
+    return out_file
 
 
-def write_header(router):
+def write_header(conf, router):
     """Écrit l'en-tête de la configuration du routeur."""
-    pass
+    date = datetime.now().strftime('%I:%M:%S UTC %a %b %d %Y')
+    conf.write("""!
+! Last configuration change at {date}
+!
+version 15.2
+service timestamps debug datetime msec
+service timestamps log datetime msec
+!
+hostname {router.name}
+!
+boot-start-marker
+boot-end-marker
+!
+!
+!
+no aaa new-model
+no ip icmp rate-limit unreachable
+ip cef
+!
+!
+!
+!
+!
+!
+no ip domain lookup
+ipv6 unicast-routing
+ipv6 cef
+!
+!
+multilink bundle-name authenticated
+!
+!
+!
+!
+!
+!
+!
+!
+!
+ip tcp synwait-time 5
+! 
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!""")
 
 
-def write_interfaces_config(router):
+def write_interfaces_config(conf, router):
     """Écrit la configuration de toutes les interfaces du routeur."""
-    pass
+    for interface in router.liste_int:
+        if 'Loopback' in interface:
+            write_loopback(interface)
+        elif 'FastEthernet' in interface:
+            write_FE(interface)
+        else:
+            write_GE(interface)
 
 
-def write_loopback(interface):
+def write_loopback(conf, interface):
     """Écrit la configuration d'une interface loopback."""
-    pass
+    conf.write("""interface {interface}
+no ip address
+ipv6 address {interface.address}
+ipv6 enable""")
+    if interface.protocol == 'ospf':
+        conf.write("""ipv6 ospf 10 area 1""")
+    conf.write("""!""")
 
 
-def write_FE(interface):
+def write_FE(conf, interface):
     """Écrit la configuration d'une interface FastEthernet."""
-    pass
+    conf.write("""interface {interface}
+no ip address
+shutdown
+duplex full
+!""")
 
 
-def write_GE(interface):
+def write_GE(conf, interface):
     """Écrit la configuration d'une interface GigabitEthernet."""
-    pass
+    conf.write("""interface {interface}
+no ip address
+negotiation auto""")
+    for add in interface.neighbors_address:
+        conf.write("""ipv6 address {add}""")
+    conf.write("""ipv6 enable
+!""")
 
 
 # ==========================
