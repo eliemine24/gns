@@ -46,10 +46,11 @@ On dispose de classes `routers` et `interfaces` pour stockers touts les infos su
 ### Fonctions
 
 - `find_local_path()` : trouve l'emplacement du programme et l'exporte
+- `json_to_dict(in_file)` : génère un dictionnaire à partir du fhcier d'intention
 
 - `generate_network_classes(int_file)` : lit le fichier d'intention et crée toutes les classes nécessaires pour écrire les configurations
-    - `generate_routers(int_file)` : génère les classes `router` et leurs attributs 
-        - `generate_interfaces(int_file, router)` génère les classes `interface` du router
+    - `generate_router(int_dict)` : génère un router à partir des infos qu'on lui donne
+        - `generate_interfaces(int_dict, router)` génère les classes `interface` du router
 
 - `write_config(router, path_to_router, out_file)` : fonction générale qui écrit une configuration pour un router dans un fichier cfg, contient d'autres fonctions
     - `write_header(router)` : écrit l'en-tête de config
