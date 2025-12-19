@@ -29,10 +29,13 @@ def generate_network_classes(int_file):
     intent = json_to_dict(int_file)
     router_list = []
 
-    # génération des routers (itérer sur les dict values, pas les clés)
+    # génération des routers
     for as_name, as_obj in intent["Structure"].items():
         for router_name, router_info in as_obj["ROUTERS"].items():
+            #génération du router
             new_router = generate_router(router_name, router_info)
+            #ajout du nom d'AS au router
+            new_router.AS_name = as_name
             for interface_name, interface_info in router_info["INTERFACES"].items():
                 new_router.liste_int.append(
                     generate_interface(interface_name, interface_info)
@@ -77,6 +80,6 @@ print(f"local path : {local_path}")
 router_list = generate_network_classes(local_path + "/intent_file.json")
 
 for r in router_list:
-    print(f"{r.name} | {r.ID} | {r.nb_int}")
+    print(f"{r.name} (AS {r.AS_name}) | {r.ID} | {r.nb_int}")
     for i in r.liste_int:
         print(f"  {i.name} {i.address} {i.protocol} neighbors: {i.neighbors_address}")
