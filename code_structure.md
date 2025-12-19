@@ -25,7 +25,8 @@ On dispose de classes `routers` et `interfaces` pour stockers touts les infos su
 - récupération des infos de chaque interfaces :  @ip, protocol, voisins
 - pour chaque routeur : vérifier les protocoles (BGP/OSPF/RIP)
 - à chaque fois, stockage dans les classes de noms correspondants
-- rédaction du `.cfg` à partir des infos récupérées 
+- copie du `.cfg` du router
+- modification du `.cfg` à partir des infos récupérées 
 - placement du `.cfg` dans l'arborescence (attention les noms dans l'arborescence sont anonymes)
 
 ### RÉDATION DU `.cfg` :
