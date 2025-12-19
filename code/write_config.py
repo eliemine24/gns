@@ -22,7 +22,7 @@ def write_config(router, out_file):
 def write_header(conf, router):
     """Écrit l'en-tête de la configuration du routeur."""
     date = datetime.now().strftime('%I:%M:%S UTC %a %b %d %Y')
-    conf.write("""!
+    conf.write(f"""!
 ! Last configuration change at {date}
 !
 version 15.2
@@ -88,7 +88,7 @@ def write_interfaces_config(conf, router):
 
 def write_loopback(conf, interface):
     """Écrit la configuration d'une interface loopback."""
-    conf.write("""interface {interface}
+    conf.write(f"""interface {interface.name}
 no ip address
 ipv6 address {interface.address}
 ipv6 enable""")
@@ -99,7 +99,7 @@ ipv6 enable""")
 
 def write_FE(conf, interface):
     """Écrit la configuration d'une interface FastEthernet."""
-    conf.write("""interface {interface}
+    conf.write(f"""interface {interface.name}
 no ip address
 shutdown
 duplex full
@@ -108,11 +108,11 @@ duplex full
 
 def write_GE(conf, interface):
     """Écrit la configuration d'une interface GigabitEthernet."""
-    conf.write("""interface {interface}
+    conf.write(f"""interface {interface.name}
 no ip address
 negotiation auto""")
     for add in interface.neighbors_address:
-        conf.write("""ipv6 address {add}""")
+        conf.write(f"""ipv6 address {add}""")
     conf.write("""ipv6 enable
 !""")
 
