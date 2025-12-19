@@ -1,6 +1,6 @@
 
 
-class router():
+class Router():
     """
     Docstring for router
     """

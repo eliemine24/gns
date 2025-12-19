@@ -1,6 +1,6 @@
 
 
-class interface():
+class Interface():
     """
     Docstring for interface
     """
