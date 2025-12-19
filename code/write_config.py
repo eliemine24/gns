@@ -7,9 +7,9 @@ from interface import Interface
 from datetime import datetime
 
 
-def write_config(router, path_to_router, out_file):
+def write_config(router, out_file):
     """Écrit la configuration complète d'un routeur dans un fichier .cfg."""
-    conf = open(out_file, 'x')
+    conf = open(out_file, 'w')
     write_header(conf, router)
     write_interfaces_config(conf, router)
     #write_bgp_config(conf, router)
@@ -78,12 +78,12 @@ ip tcp synwait-time 5
 def write_interfaces_config(conf, router):
     """Écrit la configuration de toutes les interfaces du routeur."""
     for interface in router.liste_int:
-        if 'Loopback' in interface:
-            write_loopback(interface)
-        elif 'FastEthernet' in interface:
-            write_FE(interface)
+        if interface.name == 'LOOPBACK':
+            write_loopback(conf, interface)
+        elif 'G' in interface.name :
+            write_GE(conf, interface)
         else:
-            write_GE(interface)
+            write_FE(conf, interface)
 
 
 def write_loopback(conf, interface):
