@@ -1,6 +1,6 @@
-# ==========================
-# Fonctions utilitaires
-# ==========================
+# =============================
+# === Fonctions utilitaires ===
+# =============================
 
 from router import Router
 from interface import Interface
@@ -13,9 +13,9 @@ def find_local_path():
     return local_path
 
 
-# ==========================
-# Génération des classes réseau
-# ==========================
+# =====================================
+# === Génération des classes réseau ===
+# =====================================
 
 def json_to_dict(in_file):
     """Convertit un fichier JSON en dictionnaire Python."""
@@ -70,9 +70,10 @@ def generate_interface(interface_name, interface_info):
 
 
 
-#=======================
-#=== TESTS FONCTIONS ===
-#=======================
+# =======================
+# === TESTS FONCTIONS ===
+# =======================
+# (ça fonctionne)
 
 local_path = find_local_path()
 print(f"local path : {local_path}")
