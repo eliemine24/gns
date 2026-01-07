@@ -42,6 +42,8 @@ def generate_network_classes(int_file):
                 )
                 #ajout des protocols à l'interface créé
                 new_router.liste_int[-1].protocol_list.append(as_obj["PROTOCOL"])
+                if new_router.liste_int[-1].name == "LOOPBACK":
+                    new_router.liste_int[-1].protocol_list.append("IBGP")
             router_list.append(new_router)
 
     return router_list
