@@ -40,8 +40,9 @@ def generate_network_classes(int_file):
                 new_router.liste_int.append(
                     generate_interface(interface_name, interface_info)
                 )
-                #ajout des protocols à l'interface créé
-                new_router.liste_int[-1].protocol = as_obj["PROTOCOL"]
+                #ajout des protocols à l'interface créé si il n'y en a pas déjà un
+                if new_router.liste_int[-1].protocol == "":
+                    new_router.liste_int[-1].protocol = as_obj["PROTOCOL"]
             router_list.append(new_router)
 
     return router_list
@@ -65,6 +66,9 @@ def generate_interface(interface_name, interface_info):
     interface.address = interface_info.get("ADDRESS", "")
     for neighbor in interface_info.get("NEIGHBORS_ADDRESS", []):
         interface.neighbors_address.append(neighbor)
+    #ajouter EBGP en protocol si il y a un parametre "protocol" dans l'intent file
+    if "PROTOCOL" in interface_info:
+        interface.protocol = "EBGP"
     return interface
 
 
