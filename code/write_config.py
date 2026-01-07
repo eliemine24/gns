@@ -121,10 +121,32 @@ negotiation auto""")
 # === Protocoles de routage ===
 # =============================
 
-def write_bgp_config(router):
+def write_bgp_config(conf, router):
     """Écrit la configuration BGP du routeur."""
+    conf.write(f"""!
+router bgp {router.AS_name}
+bgp router-id {router.ID}
+bgp log-neighbor-changes
+no bgp default ipv4-unicast
+""")
+    for interface in router.liste_int:
+        for neighbor in interface.neighbors_address:
+            conf.write(f"neighbor {neighbor} remote-as")
+            # A COMPLETER 
     pass
 
+# BGP config example 
+"""
+!
+router bgp 114
+ bgp router-id 4.4.4.4
+ bgp log-neighbor-changes
+ no bgp default ipv4-unicast
+ neighbor 2001:100:4:2::1 remote-as 113
+ neighbor 2001:100:4:4::1 remote-as 111
+ neighbor 2001:200:200:204::1 remote-as 111
+ !
+ """
 
 def write_ipv4_address_family(router):
     """Écrit la configuration address-family IPv4."""
@@ -143,3 +165,8 @@ def write_ipv6_address_family(router):
 def drag_and_drop_bot(cfg_file, out_path):
     """Place le fichier .cfg généré dans l'arborescence GNS."""
     pass
+
+
+# =============
+# === TESTS ===
+# =============
