@@ -13,8 +13,8 @@ def write_config(router, out_file):
     write_header(conf, router)
     write_interfaces_config(conf, router)
     #write_bgp_config(conf, router)
-    #write_ipv4_address_family(conf, router)
-    #write_ipv6_address_family(conf, router)
+    write_ipv4_address_family(conf)
+    write_ipv6_address_family(conf, router)
     conf.close()
     return out_file
 
@@ -162,14 +162,23 @@ router bgp 114
  !
  """
 
-def write_ipv4_address_family(router):
+def write_ipv4_address_family(conf):
     """Écrit la configuration address-family IPv4."""
-    pass
+    conf.write(""" address-family ipv4
+ exit-address-family
+ !\n""")
 
 
-def write_ipv6_address_family(router):
+def write_ipv6_address_family(conf, router):
     """Écrit la configuration address-family IPv6."""
-    pass
+    conf.write(""" address-family ipv6\n""")
+    liste_neighbor_add = []     #łiste pour éviter les doublons
+    for interface in router.liste_int:
+        for neighbor in interface.neighbors_address:
+            if neighbor not in liste_neighbor_add:
+                conf.write(f"""  neighbor {neighbor} activate\n""")
+    conf.write(""" exit-address-family
+!\n""")
 
 
 # ========================
