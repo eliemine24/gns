@@ -164,7 +164,9 @@ router bgp 114
 
 def write_ipv4_address_family(router):
     """Écrit la configuration address-family IPv4."""
-    pass
+    conf.write(""" address-family ipv4
+ exit-address-family
+ !""")
 
 
 def write_ipv6_address_family(router):
