@@ -9,7 +9,7 @@ class Interface():
         self.name = name
         self.address = ""
         self.neighbors_address = []
-        self.protocol = ""
+        self.protocol_list = []
 
     def __str__(self):
         print(f"interface name : {self.name} \ninterface address : {self.address} \ninterface protocol : {self.protocol}")
