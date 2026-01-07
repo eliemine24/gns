@@ -92,7 +92,7 @@ def write_loopback(conf, interface):
 no ip address
 ipv6 address {interface.address}
 ipv6 enable""")
-    if interface.protocol == 'ospf':
+    if "OSPF" in interface.protocol_list:
         conf.write("""ipv6 ospf 10 area 1""")
     conf.write("""!""")
 
