@@ -123,7 +123,16 @@ negotiation auto""")
 
 def write_bgp_config(conf, router):
     """Écrit la configuration BGP du routeur."""
-
+    conf.write(f"""!
+router bgp {router.AS_name}
+bgp router-id {router.ID}
+bgp log-neighbor-changes
+no bgp default ipv4-unicast
+""")
+    for interface in router.liste_int:
+        for neighbor in interface.neighbors_address:
+            conf.write(f"neighbor {neighbor} remote-as")
+            # A COMPLETER 
     pass
 
 # BGP config example 
