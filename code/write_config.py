@@ -94,7 +94,7 @@ def write_loopback(conf, interface):
  ipv6 address {interface.address}
  ipv6 enable
  """)
-    if "OSPF" in interface.protocol_list:
+    if interface.protocol == "OSPF":
         conf.write(""" ipv6 ospf 10 area 1
 """)
     conf.write("""!
@@ -176,7 +176,8 @@ def write_ipv6_address_family(conf, router):
     for interface in router.liste_int:
         for neighbor in interface.neighbors_address:
             if neighbor not in liste_neighbor_add:
-                conf.write(f"""  neighbor {neighbor} activate\n""")
+                #(garder seulement l'addresse sans le mask)
+                conf.write(f"""  neighbor {neighbor.split('/', 1)[0]} activate\n""")
     conf.write(""" exit-address-family
 !\n""")
 
