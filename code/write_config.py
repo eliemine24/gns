@@ -72,7 +72,8 @@ ip tcp synwait-time 5
 !
 !
 !
-!""")
+!
+""")
 
 
 def write_interfaces_config(conf, router):
@@ -89,32 +90,45 @@ def write_interfaces_config(conf, router):
 def write_loopback(conf, interface):
     """Écrit la configuration d'une interface loopback."""
     conf.write(f"""interface {interface.name}
-no ip address
-ipv6 address {interface.address}
-ipv6 enable""")
+ no ip address
+ ipv6 address {interface.address}
+ ipv6 enable
+ """)
     if "OSPF" in interface.protocol_list:
-        conf.write("""ipv6 ospf 10 area 1""")
-    conf.write("""!""")
+        conf.write(""" ipv6 ospf 10 area 1
+""")
+    conf.write("""!
+""")
 
 
 def write_FE(conf, interface):
     """Écrit la configuration d'une interface FastEthernet."""
     conf.write(f"""interface {interface.name}
-no ip address
-shutdown
-duplex full
-!""")
+ no ip address
+ negotiation auto
+ duplex full
+!
+""")
+    for add in interface.neighbors_address:
+        conf.write(f""" ipv6 address {add}
+""")
+    conf.write(""" ipv6 enable
+!
+""")
 
 
 def write_GE(conf, interface):
     """Écrit la configuration d'une interface GigabitEthernet."""
-    conf.write(f"""interface {interface.name}
-no ip address
-negotiation auto""")
+    conf.write(f""" interface {interface.name}
+ no ip address
+ negotiation auto
+""")
     for add in interface.neighbors_address:
-        conf.write(f"""ipv6 address {add}""")
-    conf.write("""ipv6 enable
-!""")
+        conf.write(f""" ipv6 address {add}
+""")
+    conf.write(""" ipv6 enable
+!
+""")
 
 
 # =============================
