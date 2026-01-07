@@ -24,7 +24,7 @@ for r in router_list:
         print(f"  {i.name} {i.address} {i.protocol} neighbors: {i.neighbors_address}")
 """
 
-#test écriture cfg 
+# test écriture cfg 
 for r in router_list:
     outfile = local_path+r.name+ ".cfg"
     write_config(r, outfile)
