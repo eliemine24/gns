@@ -40,6 +40,8 @@ def generate_network_classes(int_file):
                 new_router.liste_int.append(
                     generate_interface(interface_name, interface_info)
                 )
+                #ajout des protocols à l'interface créé
+                new_router.liste_int[-1].protocol_list.append(as_obj["PROTOCOL"])
             router_list.append(new_router)
 
     return router_list
@@ -63,8 +65,6 @@ def generate_interface(interface_name, interface_info):
     interface.address = interface_info.get("ADDRESS", "")
     for neighbor in interface_info.get("NEIGHBORS_ADDRESS", []):
         interface.neighbors_address.append(neighbor)
-    interface.protocol = interface_info.get("PROTOCOL", "")
-
     return interface
 
 
@@ -82,4 +82,4 @@ router_list = generate_network_classes(local_path + "/intent_file.json")
 for r in router_list:
     print(f"{r.name} (AS {r.AS_name}) | {r.ID} | {r.nb_int}")
     for i in r.liste_int:
-        print(f"  {i.name} {i.address} {i.protocol} neighbors: {i.neighbors_address}")
+        print(f"  {i.name} {i.address} {i.protocol_list} neighbors: {i.neighbors_address}")
