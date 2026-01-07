@@ -13,7 +13,7 @@ def write_config(router, out_file):
     write_header(conf, router)
     write_interfaces_config(conf, router)
     write_bgp_config(conf, router)
-    write_ipv4_address_family(conf, router)
+    write_ipv4_address_family(conf)
     write_ipv6_address_family(conf, router)
     conf.close()
     return out_file
