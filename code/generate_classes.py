@@ -41,9 +41,7 @@ def generate_network_classes(int_file):
                     generate_interface(interface_name, interface_info)
                 )
                 #ajout des protocols à l'interface créé
-                new_router.liste_int[-1].protocol_list.append(as_obj["PROTOCOL"])
-                if new_router.liste_int[-1].name == "LOOPBACK":
-                    new_router.liste_int[-1].protocol_list.append("IBGP")
+                new_router.liste_int[-1].protocol = as_obj["PROTOCOL"]
             router_list.append(new_router)
 
     return router_list
@@ -84,4 +82,4 @@ router_list = generate_network_classes(local_path + "/intent_file.json")
 for r in router_list:
     print(f"{r.name} (AS {r.AS_name}) | {r.ID} | {r.nb_int}")
     for i in r.liste_int:
-        print(f"  {i.name} {i.address} {i.protocol_list} neighbors: {i.neighbors_address}")
+        print(f"  {i.name} {i.address} {i.protocol} neighbors: {i.neighbors_address}")
