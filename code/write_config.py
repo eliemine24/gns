@@ -12,15 +12,9 @@ def write_config(router, out_file):
     conf = open(out_file, 'w')
     write_header(conf, router)
     write_interfaces_config(conf, router)
-<<<<<<< HEAD
     write_bgp_config(conf, router)
-    #write_ipv4_address_family(conf, router)
-    #write_ipv6_address_family(conf, router)
-=======
-    #write_bgp_config(conf, router)
-    write_ipv4_address_family(conf)
+    write_ipv4_address_family(conf, router)
     write_ipv6_address_family(conf, router)
->>>>>>> 85045ab44b205d34009d597db7eac648881d953a
     conf.close()
     return out_file
 
