@@ -12,8 +12,8 @@ def write_config(router, out_file):
     conf = open(out_file, 'w')
     write_header(conf, router)
     write_interfaces_config(conf, router)
-    #write_bgp_config(conf, router)
-    write_ipv4_address_family(conf)
+    write_bgp_config(conf, router)
+    write_ipv4_address_family(conf, router)
     write_ipv6_address_family(conf, router)
     conf.close()
     return out_file
@@ -93,8 +93,8 @@ def write_loopback(conf, interface):
  no ip address
  ipv6 address {interface.address}
  ipv6 enable
- """)
-    if interface.protocol == "OSPF":
+""")
+    if interface.protocol == "OSPF" :
         conf.write(""" ipv6 ospf 10 area 1
 """)
     conf.write("""!
@@ -138,29 +138,18 @@ def write_GE(conf, interface):
 def write_bgp_config(conf, router):
     """Écrit la configuration BGP du routeur."""
     conf.write(f"""!
-router bgp {router.AS_name}
-bgp router-id {router.ID}
-bgp log-neighbor-changes
-no bgp default ipv4-unicast
-""")
-    for interface in router.liste_int:
-        for neighbor in interface.neighbors_address:
-            conf.write(f"neighbor {neighbor} remote-as")
-            # A COMPLETER 
-    pass
-
-# BGP config example 
-"""
-!
-router bgp 114
- bgp router-id 4.4.4.4
+ router bgp {router.AS_name}
+ bgp router-id {router.ID}
  bgp log-neighbor-changes
  no bgp default ipv4-unicast
- neighbor 2001:100:4:2::1 remote-as 113
- neighbor 2001:100:4:4::1 remote-as 111
- neighbor 2001:200:200:204::1 remote-as 111
- !
- """
+""")
+    for interface in router.liste_int:
+        if interface.name == "LOOPBACK":
+            for neighbor in interface.neighbors_address:
+                conf.write(f""" neighbor {neighbor[:-4]} remote-as {router.AS_name}
+ neighbor {neighbor[:-4]} update-source {interface.name}
+""")
+    # eBGP
 
 def write_ipv4_address_family(conf):
     """Écrit la configuration address-family IPv4."""
