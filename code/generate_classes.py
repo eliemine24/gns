@@ -69,7 +69,6 @@ def generate_interface(interface_name, interface_info):
 
 
 
-
 # =======================
 # === TESTS FONCTIONS ===
 # =======================
