@@ -117,9 +117,9 @@ negotiation auto""")
 !""")
 
 
-# ==========================
-# Protocoles de routage
-# ==========================
+# =============================
+# === Protocoles de routage ===
+# =============================
 
 def write_bgp_config(router):
     """Écrit la configuration BGP du routeur."""
@@ -136,9 +136,9 @@ def write_ipv6_address_family(router):
     pass
 
 
-# ==========================
-# Intégration GNS
-# ==========================
+# ========================
+# === Intégration GNS ====
+# ========================
 
 def drag_and_drop_bot(cfg_file, out_path):
     """Place le fichier .cfg généré dans l'arborescence GNS."""
