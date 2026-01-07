@@ -12,7 +12,7 @@ def write_config(router, out_file):
     conf = open(out_file, 'w')
     write_header(conf, router)
     write_interfaces_config(conf, router)
-    #write_bgp_config(conf, router)
+    write_bgp_config(conf, router)
     #write_ipv4_address_family(conf, router)
     #write_ipv6_address_family(conf, router)
     conf.close()
@@ -149,19 +149,7 @@ def write_bgp_config(conf, router):
                 conf.write(f""" neighbor {neighbor} remote-as {router.AS_name}
  neighbor {neighbor} update-source {interface.name}
 """)
-            # A COMPLETER 
-
-# BGP config example 
-"""!
-router bgp 114
- bgp router-id 4.4.4.4
- bgp log-neighbor-changes
- no bgp default ipv4-unicast
- neighbor 2001:100:4:2::1 remote-as 113
- neighbor 2001:100:4:4::1 remote-as 111
- neighbor 2001:200:200:204::1 remote-as 111
-!
-"""
+    # eBGP
 
 def write_ipv4_address_family(router):
     """Écrit la configuration address-family IPv4."""
