@@ -165,8 +165,3 @@ def write_ipv6_address_family(router):
 def drag_and_drop_bot(cfg_file, out_path):
     """Place le fichier .cfg généré dans l'arborescence GNS."""
     pass
-
-
-# =============
-# === TESTS ===
-# =============
