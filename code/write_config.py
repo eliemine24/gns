@@ -94,7 +94,7 @@ def write_loopback(conf, interface):
  ipv6 address {interface.address}
  ipv6 enable
 """)
-    if "OSPF" in interface.protocol_list:
+    if interface.protocol == "OSPF" :
         conf.write(""" ipv6 ospf 10 area 1
 """)
     conf.write("""!
@@ -146,8 +146,8 @@ def write_bgp_config(conf, router):
     for interface in router.liste_int:
         if interface.name == "LOOPBACK":
             for neighbor in interface.neighbors_address:
-                conf.write(f""" neighbor {neighbor} remote-as {router.AS_name}
- neighbor {neighbor} update-source {interface.name}
+                conf.write(f""" neighbor {neighbor[:-4]} remote-as {router.AS_name}
+ neighbor {neighbor[:-4]} update-source {interface.name}
 """)
     # eBGP
 
