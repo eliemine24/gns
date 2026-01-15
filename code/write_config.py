@@ -83,7 +83,11 @@ def write_end(conf, router):
 no ip http server
 no ip http secure-server
 !\n""")
-    if "RIP" in router.protocol_list:
+    protocol = "OSPF"
+    for int in router.liste_int:
+        if "RIP" in int.protocol_list:
+            protocol = "RIP"
+    if protocol == "RIP":
         conf.write("""ipv6 router rip maison
  redistribute connected\n""")
     else: 
@@ -134,7 +138,7 @@ def write_loopback(conf, interface):
  ipv6 address {interface.address}
  ipv6 enable
 """)
-    if interface.protocol == "OSPF" :
+    if interface.protocol_list == "OSPF" :
         conf.write(""" ipv6 ospf 10 area 1
 """)
     conf.write("""!
@@ -163,8 +167,7 @@ def write_GE(conf, interface):
  no ip address
  negotiation auto
 """)
-    for add in interface.neighbors_address:
-        conf.write(f""" ipv6 address {add}
+    conf.write(f""" ipv6 address {interface.address}
 """)
     conf.write(""" ipv6 enable
 !
@@ -186,8 +189,8 @@ def write_bgp_config(conf, router,router_list):
     for interface in router.liste_int:
         if interface.name == "LOOPBACK":
             for neighbor in interface.neighbors_address:
-                conf.write(f""" neighbor {neighbor[:-4]} remote-as {router.AS_name}
- neighbor {neighbor[:-4]} update-source {interface.name}
+                conf.write(f""" neighbor {neighbor.split('/', 1)[0]} remote-as {router.AS_name}
+ neighbor {neighbor.split('/', 1)[0]} update-source {interface.name}
 """)
         else:
             for protocol in interface.protocol_list:
@@ -196,10 +199,10 @@ def write_bgp_config(conf, router,router_list):
                     
                     #va chercher l'as-name du routeur voisin
                     for router_temp in router_list:
-                        for temp_interface in router_temp:
+                        for temp_interface in router_temp.liste_int:
                             if temp_interface.address in interface.neighbors_address:
-                                conf.write(f""" neighbor {temp_interface.address[:-4]} remote-as {router_temp.AS_name}
-                                            """)
+                                conf.write(f""" neighbor {temp_interface.address.split('/', 1)[0]} remote-as {router_temp.AS_name}
+""")
 
 def write_ipv4_address_family(conf):
     """Écrit la configuration address-family IPv4."""
@@ -219,3 +222,12 @@ def write_ipv6_address_family(conf, router):
                 conf.write(f"""  neighbor {neighbor.split('/', 1)[0]} activate\n""")
     conf.write(""" exit-address-family
 !\n""")
+
+
+# ========================
+# === Intégration GNS ====
+# ========================
+
+def drag_and_drop_bot(cfg_file, out_path):
+    """Place le fichier .cfg généré dans l'arborescence GNS."""
+    pass
