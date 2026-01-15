@@ -15,16 +15,12 @@ from datetime import datetime
 import os
 import shutil #librairie pour la gestion de fichiers
 
-PATH = find_local_path()                        # chemin du script
-HPATH = PATH.rsplit('/', 1)[0]                  # chemin du projet
-MAIN_DEST = HPATH + "/project-files/dynamips"   # destination générale des .cfg
-INTENT = json_to_dict("intent_file.json")       # fichier d'intention
-#PROJECT_NAME = str(input("Nom dossier contenant le projet : "))
+
 
 
 # Récupérer les noms imbuvables des dossier de config
-def find_repository_names(path, ):
-
+def find_repository_names():
+    
     # lire le fichier "project_name"+".gns3"
     # en faire un dictionnaire (json_ton_dict() ça doit fonctionner)
     # récupérer les noms de fichier correspondans aux noms des routeurs ("R1", "R2", etc)
