@@ -7,11 +7,13 @@ from interface import Interface
 from generate_classes import *
 from write_config import *
 
+LPATH = find_local_path()                        # chemin du script
+HPATH = LPATH.rsplit('/', 1)[0]                  # chemin du projet
+MAIN_DEST = HPATH + "/project-files/dynamips"   # destination générale des .cfg
+INTENT = json_to_dict("intent_file.json")       # fichier d'intention
+PROJECT_NAME = str(input("Nom du dossier contenant le projet : "))
 
-# trouver le chemin local
-local_path = find_local_path()
-local_path = local_path+"/"
-print(f"local path : {local_path}")
+print(f"local path : {LPATH}")
 
 # génération des routeurs et interfaces
 router_list = generate_network_classes(local_path + "intent_file.json")
@@ -26,5 +28,5 @@ for r in router_list:
 
 # test écriture cfg 
 for r in router_list:
-    outfile = local_path+r.name+ ".cfg"
+    outfile = LPATH+r.name+ ".cfg"
     write_config(r, outfile, router_list)
