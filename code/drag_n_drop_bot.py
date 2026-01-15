@@ -21,7 +21,7 @@ import shutil #librairie pour la gestion de fichiers
 # Récupérer les noms imbuvables des dossier de config
 def find_repository_names(routers_list, project_name, general_path):
     repo_names = {}
-    # Path: /home/elie/insa/3TC/gns/gns/ + projet_test/ + projet_test.gns3
+    # Path: ~local/ + projet_test/ + projet_test.gns3
     gns3_file = os.path.join(general_path, project_name, f"{project_name}.gns3")
     project_dict = json_to_dict(gns3_file)
     
