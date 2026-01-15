@@ -7,12 +7,12 @@ from interface import Interface
 from datetime import datetime
 
 
-def write_config(router, out_file):
+def write_config(router, out_file,router_list):
     """Écrit la configuration complète d'un routeur dans un fichier .cfg."""
     conf = open(out_file, 'w')
     write_header(conf, router)
     write_interfaces_config(conf, router)
-    write_bgp_config(conf, router)
+    write_bgp_config(conf, router,router_list)
     write_ipv4_address_family(conf)
     write_ipv6_address_family(conf, router)
     write_end(conf, router)
@@ -175,7 +175,7 @@ def write_GE(conf, interface):
 # === Protocoles de routage ===
 # =============================
 
-def write_bgp_config(conf, router):
+def write_bgp_config(conf, router,router_list):
     """Écrit la configuration BGP du routeur."""
     conf.write(f"""!
  router bgp {router.AS_name}
@@ -189,7 +189,17 @@ def write_bgp_config(conf, router):
                 conf.write(f""" neighbor {neighbor[:-4]} remote-as {router.AS_name}
  neighbor {neighbor[:-4]} update-source {interface.name}
 """)
-    # eBGP
+        else:
+            for protocol in interface.protocol_list:
+                
+                if protocol == "EBGP":
+                    
+                    #va chercher l'as-name du routeur voisin
+                    for router_temp in router_list:
+                        for temp_interface in router_temp:
+                            if temp_interface.address in interface.neighbors_address:
+                                conf.write(f""" neighbor {temp_interface.address[:-4]} remote-as {router_temp.AS_name}
+                                            """)
 
 def write_ipv4_address_family(conf):
     """Écrit la configuration address-family IPv4."""
