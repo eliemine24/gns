@@ -38,3 +38,5 @@ for r in router_list:
 REPONAMES = find_repository_names(router_list, PROJECT_NAME, HPATH)
 print("--- reponames ---")
 print(REPONAMES)
+
+drag_and_drop(LPATH, HPATH+"/projet_test/", REPONAMES)
