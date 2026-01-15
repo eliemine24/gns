@@ -219,12 +219,3 @@ def write_ipv6_address_family(conf, router):
                 conf.write(f"""  neighbor {neighbor.split('/', 1)[0]} activate\n""")
     conf.write(""" exit-address-family
 !\n""")
-
-
-# ========================
-# === Intégration GNS ====
-# ========================
-
-def drag_and_drop_bot(cfg_file, out_path):
-    """Place le fichier .cfg généré dans l'arborescence GNS."""
-    pass
