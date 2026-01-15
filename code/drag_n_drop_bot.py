@@ -19,14 +19,24 @@ import shutil #librairie pour la gestion de fichiers
 
 
 # Récupérer les noms imbuvables des dossier de config
-def find_repository_names():
+def find_repository_names(routers_list, project_name, general_path):
+    repo_names = {}
+    project_dict = json_to_dict(general_path + project_name + ".gns3")
     
-    # lire le fichier "project_name"+".gns3"
-    # en faire un dictionnaire (json_ton_dict() ça doit fonctionner)
-    # récupérer les noms de fichier correspondans aux noms des routeurs ("R1", "R2", etc)
-    # renvoyer un un dict ou une liste de tuples {"router_name" : "repository_name"; etc} / [("router_name", "repository_name"), etc]
-
-    pass
+    # GNS3 file structure: topology > nodes 
+    nodes = project_dict.get("topology", {}).get("nodes", [])
+    
+    for router in routers_list:
+        for node in nodes:
+            if node.get("name") == router.name:
+                # Extract repository name from the node
+                # GNS3 typically stores the compute_id or other identifier
+                repo_name = node.get("node_id") or node.get("compute_id")
+                if repo_name:
+                    repo_names[router.name] = repo_name
+                break
+    
+    return repo_names
 
 # Déplacer un fichier fichier file depuis l'emplacement du script jusqu'à l'emplacement final
 def place_file(file, project_path, gns_path, dest_router_folder):
