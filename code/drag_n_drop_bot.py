@@ -43,8 +43,6 @@ def place_file(file, project_path, gns_path, dest_router_folder):
     #On crée des chemins proprement pour ne pas avoir de propblèmes si on passe de Linux à Windows
     source = os.path.join(project_path, "code", file)
     destination = os.path.join(gns_path, "project-files","dynamips", dest_router_folder)
-
-<<<<<<< HEAD
     shutil.copy(source, destination)
 
 
@@ -68,6 +66,3 @@ def drag_and_drop (project_path, gns_path, repo_names) :
 
 # TEST omg ça marche (créer un "testfile.py dans le dossier local")
 #shutil.move(PATH+"/testfile.py", HPATH+"/")
-=======
-    shutil.copy(source, destination)
->>>>>>> 4e01119efad3d3d69cb25fc854bad52747ab1c06
