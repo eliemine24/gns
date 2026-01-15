@@ -15,6 +15,7 @@ def write_config(router, out_file):
     write_bgp_config(conf, router)
     write_ipv4_address_family(conf)
     write_ipv6_address_family(conf, router)
+    write_end(conf, router)
     conf.close()
     return out_file
 
@@ -75,6 +76,45 @@ ip tcp synwait-time 5
 !
 """)
 
+def write_end(conf, router):
+    conf.write("""ip forward-protocol nd
+!
+!
+no ip http server
+no ip http secure-server
+!\n""")
+    if "RIP" in router.protocol_list:
+        conf.write("""ipv6 router rip maison
+ redistribute connected\n""")
+    else: 
+        conf.write(f"""ipv6 router ospf {router.name[1]}
+ router-id {router.ID}\n""")
+    conf.write("""!
+!
+!
+!
+control-plane
+!
+!
+line con 0
+ exec-timeout 0 0
+ privilege level 15
+ logging synchronous
+ stopbits 1
+line aux 0
+ exec-timeout 0 0
+ privilege level 15
+ logging synchronous
+ stopbits 1
+line vty 0 4
+ login
+!
+!
+end\n""")
+
+# =============================
+# ======== Interfaces =========
+# =============================
 
 def write_interfaces_config(conf, router):
     """Écrit la configuration de toutes les interfaces du routeur."""
