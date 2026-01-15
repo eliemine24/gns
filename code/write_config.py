@@ -138,11 +138,11 @@ def write_loopback(conf, interface):
  ipv6 address {interface.address}
  ipv6 enable
 """)
-    if interface.protocol_list == "OSPF" :
-        conf.write(""" ipv6 ospf 10 area 1
-""")
-    conf.write("""!
-""")
+    if "OSPF" in interface.protocol_list :
+        conf.write(""" ipv6 ospf 10 area 1\n""")
+    elif "RIP" in interface.protocol_list:
+        conf.write(""" ipv6 rip 10 enable\n""")
+    conf.write("""!\n""")
 
 
 def write_FE(conf, interface):
@@ -153,6 +153,10 @@ def write_FE(conf, interface):
  duplex full
 !
 """)
+    if "OSPF" in interface.protocol_list :
+        conf.write(""" ipv6 ospf 10 area 1\n""")
+    elif "RIP" in interface.protocol_list:
+        conf.write(""" ipv6 rip 10 enable\n""")
     for add in interface.neighbors_address:
         conf.write(f""" ipv6 address {add}
 """)
@@ -160,13 +164,16 @@ def write_FE(conf, interface):
 !
 """)
 
-
 def write_GE(conf, interface):
     """Écrit la configuration d'une interface GigabitEthernet."""
     conf.write(f""" interface {interface.name}
  no ip address
  negotiation auto
 """)
+    if "OSPF" in interface.protocol_list :
+        conf.write(""" ipv6 ospf 10 area 1\n""")
+    elif "RIP" in interface.protocol_list:
+        conf.write(""" ipv6 rip 10 enable\n""")
     conf.write(f""" ipv6 address {interface.address}
 """)
     conf.write(""" ipv6 enable
@@ -220,6 +227,9 @@ def write_ipv6_address_family(conf, router):
             if neighbor not in liste_neighbor_add:
                 #(garder seulement l'addresse sans le mask)
                 conf.write(f"""  neighbor {neighbor.split('/', 1)[0]} activate\n""")
+                #si on a un protocol EBGP sur cette interface, on n'active pas next-hop-self
+                if "EBGP" not in interface.protocol_list:
+                    conf.write(f"""  neighbor {neighbor.split('/', 1)[0]} next-hop-self\n""")
     conf.write(""" exit-address-family
 !\n""")
 
