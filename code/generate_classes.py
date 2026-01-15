@@ -65,10 +65,10 @@ def generate_interface(interface_name, interface_info, as_obj):
         interface.neighbors_address.append(neighbor)
     #ajout des protocols à l'interface créé si il n'y en a pas déjà un
     if "PROTOCOL" not in interface_info:
-        interface.protocol = as_obj["PROTOCOL"]
+        interface.protocol_list.append(as_obj["PROTOCOL"])
     #ajouter EBGP en protocol si il y a un parametre "protocol" dans l'intent file
     else:
-        interface.protocol = interface_info.get("PROTOCOL","")
+        interface.protocol_list.append(interface_info.get("PROTOCOL",""))
     return interface
 
 
