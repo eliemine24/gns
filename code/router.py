@@ -9,7 +9,6 @@ class Router():
         self.ID = ID
         self.nb_int = nb_interfaces
         self.liste_int=[]
-        self.protocol_list=[]
         self.AS_name = ""
 
     def __str__(self):

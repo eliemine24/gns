@@ -27,4 +27,4 @@ for r in router_list:
 # test écriture cfg 
 for r in router_list:
     outfile = local_path+r.name+ ".cfg"
-    write_config(r, outfile)
+    write_config(r, outfile, router_list)
