@@ -83,7 +83,11 @@ def write_end(conf, router):
 no ip http server
 no ip http secure-server
 !\n""")
-    if "RIP" in router.protocol_list:
+    protocol = "OSPF"
+    for int in router.liste_int():
+        if "RIP" in int.protocol_list:
+            protocol = "RIP"
+    if protocol == "RIP":
         conf.write("""ipv6 router rip maison
  redistribute connected\n""")
     else: 
@@ -219,3 +223,12 @@ def write_ipv6_address_family(conf, router):
                 conf.write(f"""  neighbor {neighbor.split('/', 1)[0]} activate\n""")
     conf.write(""" exit-address-family
 !\n""")
+
+
+# ========================
+# === Intégration GNS ====
+# ========================
+
+def drag_and_drop_bot(cfg_file, out_path):
+    """Place le fichier .cfg généré dans l'arborescence GNS."""
+    pass
