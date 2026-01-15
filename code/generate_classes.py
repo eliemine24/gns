@@ -35,7 +35,7 @@ def generate_network_classes(int_file):
             #génération du router
             new_router = generate_router(router_name, router_info)
             #ajout du nom d'AS au router
-            new_router.AS_name = as_name
+            new_router.AS_name = as_obj["AS_NAME"]
             for interface_name, interface_info in router_info["INTERFACES"].items():
                 new_router.liste_int.append(
                     generate_interface(interface_name, interface_info, as_obj)

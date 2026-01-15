@@ -22,7 +22,7 @@
                             "NEIGHBORS_ADDRESS": ["1111:0:0:1::12/64"]
                         },
 
-                        "LOOPBACK": {
+                        "LOOPBACK0": {
                             "ADDRESS": "1111:0:0:3::111/128",
                             "NEIGHBORS_ADDRESS": ["1111:0:0:3::113/128","1111:0:0:3::112/128"]
                         }
@@ -46,7 +46,7 @@
                             "NEIGHBORS_ADDRESS": ["1111:0:0:2::22/64"]
                         },
 
-                        "LOOPBACK": {
+                        "LOOPBACK0": {
                             "ADDRESS": "1111:0:0:3::112/128",
                             "NEIGHBORS_ADDRESS": ["1111:0:0:3::111/128","1111:0:0:3::113/128"]
                         }
@@ -71,7 +71,7 @@
                             "NEIGHBORS_ADDRESS": ["1111:0:0:2::21/64"]
                         },
 
-                        "LOOPBACK": {
+                        "LOOPBACK0": {
                             "ADDRESS": "1111:0:0:3::113/128",
                             "NEIGHBORS_ADDRESS": ["1111:0:0:3::111/128","1111:0:0:3::112/128"]
                         }
@@ -104,7 +104,7 @@
                             "NEIGHBORS_ADDRESS":["2222:0:0:1::12/64"]
                         },
 
-                        "LOOPBACK": {
+                        "LOOPBACK0": {
                             "ADDRESS": "2222:0:0:3::114/128",
                             "NEIGHBORS_ADDRESS": ["2222:0:0:3::115/128","2222:0:0:3::116/128"]
                         }
@@ -128,7 +128,7 @@
                             "NEIGHBORS_ADDRESS": ["2222:0:0:1::11/64"] 
                         },
 
-                        "LOOPBACK": {
+                        "LOOPBACK0": {
                             "ADDRESS": "2222:0:0:3::115/128",
                             "NEIGHBORS_ADDRESS": ["2222:0:0:3::114/128","2222:0:0:3::116/128"]
                         }
@@ -147,7 +147,7 @@
                             "NEIGHBORS_ADDRESS": ["2222:0:0:2::21/64"] 
                         },
 
-                        "LOOPBACK": {
+                        "LOOPBACK0": {
                             "ADDRESS": "2222:0:0:3::116/128",
                             "NEIGHBORS_ADDRESS": ["2222:0:0:3::114/128","2222:0:0:3::115/128"]
                         }
