@@ -39,7 +39,14 @@ def find_repository_names(routers_list, project_name, general_path):
     return repo_names
 
 # Déplacer un fichier fichier file depuis l'emplacement du script jusqu'à l'emplacement final
-def place_file(file, project_path, path_to_file):
+def place_file(file, project_path, gns_path, dest_router_folder):
+    
+    #On crée des chemins proprement pour ne pas avoir de propblèmes si on passe de Linux à Windows
+    source = os.path.join(project_path, "code", file)
+    destination = os.path.join(gns_path, "dynamips", dest_router_folder)
+
+    shutil.copy(source, destination)
+
     pass
 
 
