@@ -76,7 +76,7 @@ def generate_interface(interface_name, interface_info, as_obj):
 # === TESTS FONCTIONS ===
 # =======================
 # (ça fonctionne)
-
+"""
 local_path = find_local_path()
 print(f"local path : {local_path}")
 
@@ -86,3 +86,4 @@ for r in router_list:
     print(f"{r.name} (AS {r.AS_name}) | {r.ID} | {r.nb_int}")
     for i in r.liste_int:
         print(f"  {i.name} {i.address} {i.protocol_list} neighbors: {i.neighbors_address}")
+"""

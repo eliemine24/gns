@@ -48,21 +48,9 @@ def place_file(file, project_path, gns_path, dest_router_folder):
 
 # Lit le dictionnaire de find_repository_names et puis place les bons fichiers de config dans le bons dossiers
 
-def drag_and_drop (project_path, gns_path, repo_names) :
+def drag_and_drop(project_path, gns_path, repo_names) :
 
     for router_name, dest_router_folder in repo_names.items() :
         
         file = router_name+".cfg"
         place_file(file, project_path, gns_path, dest_router_folder)
-
-
-
-
-        
-
-
-
-
-
-# TEST omg ça marche (créer un "testfile.py dans le dossier local")
-#shutil.move(PATH+"/testfile.py", HPATH+"/")
