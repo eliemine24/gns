@@ -42,7 +42,7 @@ def place_file(file, project_path, gns_path, dest_router_folder):
     
     #On crée des chemins proprement pour ne pas avoir de propblèmes si on passe de Linux à Windows
     source = os.path.join(project_path, file)
-    destination = os.path.join(gns_path, "project-files","dynamips", dest_router_folder)
+    destination = os.path.join(gns_path, "project-files","dynamips", dest_router_folder, "configs")
     shutil.copy(source, destination)
 
 
