@@ -6,7 +6,7 @@ from router import Router
 from interface import Interface
 from generate_classes import *
 from write_config import *
-from drag_n_drop_bot import find_repository_names, 
+from drag_n_drop_bot import find_repository_names
 
 LPATH = find_local_path() + "/"                        # local path
 HPATH = os.path.dirname(LPATH.rstrip('/')) + "/"      # local path un cran plus haut (équivalent cd ..)
