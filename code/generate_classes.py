@@ -38,11 +38,8 @@ def generate_network_classes(int_file):
             new_router.AS_name = as_name
             for interface_name, interface_info in router_info["INTERFACES"].items():
                 new_router.liste_int.append(
-                    generate_interface(interface_name, interface_info)
+                    generate_interface(interface_name, interface_info, as_obj)
                 )
-                #ajout des protocols à l'interface créé si il n'y en a pas déjà un
-                if new_router.liste_int[-1].protocol == "":
-                    new_router.liste_int[-1].protocol = as_obj["PROTOCOL"]
             router_list.append(new_router)
 
     return router_list
@@ -58,7 +55,7 @@ def generate_router(router_name, router_info):
     return router
 
 
-def generate_interface(interface_name, interface_info):
+def generate_interface(interface_name, interface_info, as_obj):
     """Génère les classes Interface associées à un routeur."""
     interface = Interface(interface_name)
 
@@ -66,9 +63,12 @@ def generate_interface(interface_name, interface_info):
     interface.address = interface_info.get("ADDRESS", "")
     for neighbor in interface_info.get("NEIGHBORS_ADDRESS", []):
         interface.neighbors_address.append(neighbor)
+    #ajout des protocols à l'interface créé si il n'y en a pas déjà un
+    if "PROTOCOL" not in interface_info:
+        interface.protocol = as_obj["PROTOCOL"]
     #ajouter EBGP en protocol si il y a un parametre "protocol" dans l'intent file
-    if "PROTOCOL" in interface_info:
-        interface.protocol = "EBGP"
+    else:
+        interface.protocol = interface_info.get("PROTOCOL","")
     return interface
 
 
@@ -85,4 +85,4 @@ router_list = generate_network_classes(local_path + "/intent_file.json")
 for r in router_list:
     print(f"{r.name} (AS {r.AS_name}) | {r.ID} | {r.nb_int}")
     for i in r.liste_int:
-        print(f"  {i.name} {i.address} {i.protocol} neighbors: {i.neighbors_address}")
+        print(f"  {i.name} {i.address} {i.protocol if hasattr(i,"protocol") else 0.0} neighbors: {i.neighbors_address}")

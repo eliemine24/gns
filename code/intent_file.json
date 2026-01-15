@@ -95,7 +95,8 @@
 
                         "G1/0": {
                             "ADDRESS": "3333::32/64",
-                            "NEIGHBORS_ADDRESS": ["3333::31/64"]
+                            "NEIGHBORS_ADDRESS": ["3333::31/64"],
+                            "PROTOCOL": "EBGP"
                         },
 
                         "G2/0": {
