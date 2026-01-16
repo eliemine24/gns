@@ -1,0 +1,102 @@
+{
+    "Intent":{
+
+    },
+    "Structure":{
+
+        "AS1":{
+
+            "AS_NAME" : "1111",
+            "PROTOCOL": "RIP",
+
+            "ROUTERS":{
+                
+                "R1":{
+
+                    "INTERFACES":{
+
+                        "G1/0": {
+                            "NEIGHBORS": {"R2": "G1/0"}
+                        }
+                    }
+                },
+                
+                "R2":{
+                    
+                    "INTERFACES":{
+
+                        "G1/0": {
+                            "NEIGHBORS":{"R1":"G1/0"}
+                        },
+
+                        "G2/0": {
+                            "NEIGHBORS":{"R3":"G2/0"}
+                        }
+                    }
+                },
+                
+                "R3":{
+                    
+                    "INTERFACES":{
+
+                        "G1/0": {
+                            "NEIGHBORS":{"R4":"G1/0"},
+                            "PROTOCOL": "EBGP"
+                        },
+
+                        "G2/0": {
+                            "NEIGHBORS":{"R2":"G2/0"}
+                        }
+                    }
+                }
+            }
+        },
+        "AS2":{
+
+            "AS_NAME" : "2222",
+            "PROTOCOL": "OSPF",
+
+            "ROUTERS":{
+                
+                "R4":{
+                    
+                    "INTERFACES":{
+
+                        "G1/0": {
+                            "NEIGHBORS":{"R3":"G1/0"},
+                            "PROTOCOL": "EBGP"
+                        },
+
+                        "G2/0": {
+                            "NEIGHBORS":{"R5":"G2/0"}
+                        }
+                    }
+                },
+                
+                "R5":{
+
+                    "INTERFACES":{
+
+                        "G1/0": {
+                            "NEIGHBORS":{"R6":"G1/0"}
+                        },
+
+                        "G2/0": {
+                            "NEIGHBORS":{"R4":"G2/0"}
+                        }
+                    }
+                },
+                
+                "R6":{
+
+                    "INTERFACES":{
+
+                        "G1/0": {
+                            "NEIGHBORS":{"R5":"G1/0"}
+                        }
+                        }
+                    }
+                }
+            }
+        }
+}
