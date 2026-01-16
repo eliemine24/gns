@@ -2,8 +2,39 @@ import ipaddress
 import json
 import copy
 
-import ipaddress
-import json
+import os
+
+def charger_json_en_dict(chemin_fichier):
+    """
+    Lit un fichier JSON et le convertit en dictionnaire Python.
+    """
+    try:
+        if not os.path.exists(chemin_fichier):
+            print(f"Erreur : Le fichier '{chemin_fichier}' n'existe pas.")
+            return None
+            
+        with open(chemin_fichier, 'r', encoding='utf-8') as fichier:
+            donnees = json.load(fichier)
+        return donnees
+    
+    except json.JSONDecodeError:
+        print(f"Erreur : Le fichier '{chemin_fichier}' n'est pas un JSON valide.")
+        return None
+
+def sauvegarder_dict_en_json(dictionnaire, chemin_destination):
+    """
+    Prend un dictionnaire et le sauvegarde dans un nouveau fichier JSON.
+    """
+    try:
+        with open(chemin_destination, 'w', encoding='utf-8') as fichier:
+            # indent=4 permet d'avoir un fichier lisible (pas tout sur une ligne)
+            # ensure_ascii=False permet de garder les accents (ex: é, à)
+            json.dump(dictionnaire, fichier, indent=4, ensure_ascii=False)
+        print(f"Succès : Le fichier a été sauvegardé sous '{chemin_destination}'")
+        
+    except Exception as e:
+        print(f"Une erreur est survenue lors de la sauvegarde : {e}")
+
 
 def generer_plan(data):
     # 1. Configuration des bases
