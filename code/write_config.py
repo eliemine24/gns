@@ -155,13 +155,12 @@ def write_FE(conf, interface):
 """)
     conf.write(""" ipv6 enable
 """)
+    conf.write(f""" ipv6 address {interface.address}\n""")
     if "OSPF" in interface.protocol_list :
         conf.write(""" ipv6 ospf 10 area 1\n""")
     elif "RIP" in interface.protocol_list:
         conf.write(""" ipv6 rip maison enable\n""")
-    conf.write(f""" ipv6 address {interface.address}
-!
-""")
+    conf.write(f"""!\n""")
 
 
 def write_GE(conf, interface):
@@ -172,13 +171,12 @@ def write_GE(conf, interface):
 """)
     conf.write(""" ipv6 enable
 """)
+    conf.write(f""" ipv6 address {interface.address}\n""")
     if "OSPF" in interface.protocol_list :
         conf.write(""" ipv6 ospf 10 area 1\n""")
     elif "RIP" in interface.protocol_list:
         conf.write(""" ipv6 rip maison enable\n""")
-    conf.write(f""" ipv6 address {interface.address}
-!
-""")
+    conf.write(f"""!\n""")
 
 
 # =============================
