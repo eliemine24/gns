@@ -268,8 +268,15 @@ intention_json = {
     }
 }
 
-# (Remplace par ton dictionnaire complet)
+# Récupère le dossier où se trouve le script .py actuel
+dossier_actuel = os.path.dirname(__file__)
+chemin_complet = os.path.join(dossier_actuel, "intent_file_2.json")
+intention_json = charger_json_en_dict(chemin_complet)
 mon_plan = generer_plan_adressage(intention_json)
+
+
 print(json.dumps(mon_plan, indent=4))
+
+sauvegarder_dict_en_json(mon_plan, "test.json")
 
 
