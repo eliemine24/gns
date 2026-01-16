@@ -68,7 +68,8 @@
                         },
 
                         "G2/0": {
-                            "NEIGHBORS":{"R5":"G2/0"}
+                            "NEIGHBORS":{"R5":"G2/0"},
+                            "COST":100
                         }
                     }
                 },
@@ -78,11 +79,13 @@
                     "INTERFACES":{
 
                         "G1/0": {
-                            "NEIGHBORS":{"R6":"G1/0"}
+                            "NEIGHBORS":{"R6":"G1/0"},
+                            "COST":100
                         },
 
                         "G2/0": {
-                            "NEIGHBORS":{"R4":"G2/0"}
+                            "NEIGHBORS":{"R4":"G2/0"},
+                            "COST":100
                         }
                     }
                 },
@@ -92,7 +95,8 @@
                     "INTERFACES":{
 
                         "G1/0": {
-                            "NEIGHBORS":{"R5":"G1/0"}
+                            "NEIGHBORS":{"R5":"G1/0"},
+                            "COST":100
                         }
                         }
                     }
