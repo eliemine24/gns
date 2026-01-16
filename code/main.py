@@ -11,15 +11,16 @@ from drag_n_drop_bot import find_repository_names, drag_and_drop
 LPATH = find_local_path() +"/"                        # chemin du script
 HPATH = LPATH.rstrip('/').rsplit('/', 1)[0]           # chemin du projet
 MAIN_DEST = HPATH + "/project-files/dynamips"         # destination générale des .cfg
-INTENT = json_to_dict("intent_file_ancien_gros_reseaux.json")             # fichier d'intention
-PROJECT_NAME = "projet_test"#str(input("Nom du dossier contenant le projet : "))
+FILE_NAME = "intent_file.json"
+INTENT = json_to_dict(FILE_NAME)             # fichier d'intention
+PROJECT_NAME = "projet_test"    #str(input("Nom du dossier contenant le projet : "))
 
 print("--- pathes ---")
 print(f"LPATH : {LPATH}")
 print(f"HPATH : {HPATH}\n")
 
 # génération des routeurs et interfaces
-router_list = generate_network_classes(LPATH + "intent_file.json")
+router_list = generate_network_classes(LPATH + FILE_NAME)
 
 # affichage 
 """
