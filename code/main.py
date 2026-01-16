@@ -11,7 +11,7 @@ from drag_n_drop_bot import find_repository_names, drag_and_drop
 LPATH = find_local_path() +"/"                        # chemin du script
 HPATH = LPATH.rstrip('/').rsplit('/', 1)[0]           # chemin du projet
 MAIN_DEST = HPATH + "/project-files/dynamips"         # destination générale des .cfg
-INTENT = json_to_dict("intent_file.json")             # fichier d'intention
+INTENT = json_to_dict("intent_file_ancien_gros_reseaux.json")             # fichier d'intention
 PROJECT_NAME = "projet_test"#str(input("Nom du dossier contenant le projet : "))
 
 print("--- pathes ---")
