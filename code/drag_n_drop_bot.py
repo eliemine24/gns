@@ -38,11 +38,11 @@ def find_repository_names(routers_list, project_name, general_path):
     return repo_names
 
 # Déplacer un fichier fichier file depuis l'emplacement du script jusqu'à l'emplacement final
-def place_file(file, project_path, gns_path, dest_router_folder):
+def place_file(file, project_path, gns_path, dest_router_folder, final_file):
     
     #On crée des chemins proprement pour ne pas avoir de propblèmes si on passe de Linux à Windows
     source = os.path.join(project_path, file)
-    destination = os.path.join(gns_path, "project-files","dynamips", dest_router_folder, "configs")
+    destination = os.path.join(gns_path, "project-files","dynamips", dest_router_folder, "configs", final_file)
     shutil.copy(source, destination)
 
 
@@ -53,4 +53,5 @@ def drag_and_drop(project_path, gns_path, repo_names) :
     for router_name, dest_router_folder in repo_names.items() :
         
         file = router_name+".cfg"
-        place_file(file, project_path, gns_path, dest_router_folder)
+        final_file = "i" + router_name[1:] + "_startup-config" +".cfg"
+        place_file(file, project_path, gns_path, dest_router_folder, final_file)

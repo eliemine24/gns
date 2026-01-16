@@ -5,6 +5,7 @@
 from router import Router
 from interface import Interface
 from datetime import datetime
+import ipaddress
 
 
 def write_config(router, out_file,router_list):
@@ -12,9 +13,9 @@ def write_config(router, out_file,router_list):
     conf = open(out_file, 'w')
     write_header(conf, router)
     write_interfaces_config(conf, router)
-    write_bgp_config(conf, router,router_list)
+    write_bgp_config(conf, router, router_list)
     write_ipv4_address_family(conf)
-    write_ipv6_address_family(conf, router)
+    write_ipv6_address_family(conf, router, router_list)
     write_end(conf, router)
     conf.close()
     return out_file
@@ -139,7 +140,7 @@ def write_loopback0(conf, interface):
  ipv6 enable
 """)
     if "OSPF" in interface.protocol_list :
-        conf.write(""" ipv6 ospf 10 area 1\n""")
+        conf.write(""" ipv6 ospf 10 area 0\n""")
     elif "RIP" in interface.protocol_list:
         conf.write(""" ipv6 rip maison enable\n""")
     conf.write("""!\n""")
@@ -157,7 +158,7 @@ def write_FE(conf, interface):
 """)
     conf.write(f""" ipv6 address {interface.address}\n""")
     if "OSPF" in interface.protocol_list :
-        conf.write(""" ipv6 ospf 10 area 1\n""")
+        conf.write(""" ipv6 ospf 10 area 0\n""")
     elif "RIP" in interface.protocol_list:
         conf.write(""" ipv6 rip maison enable\n""")
     conf.write(f"""!\n""")
@@ -173,7 +174,7 @@ def write_GE(conf, interface):
 """)
     conf.write(f""" ipv6 address {interface.address}\n""")
     if "OSPF" in interface.protocol_list :
-        conf.write(""" ipv6 ospf 10 area 1\n""")
+        conf.write(""" ipv6 ospf 10 area 0\n""")
     elif "RIP" in interface.protocol_list:
         conf.write(""" ipv6 rip maison enable\n""")
     conf.write(f"""!\n""")
@@ -217,22 +218,23 @@ def write_ipv4_address_family(conf):
  !\n""")
 
 
-def write_ipv6_address_family(conf, router):
+def write_ipv6_address_family(conf, router, router_list):
     """Écrit la configuration address-family IPv6."""
     conf.write(""" address-family ipv6\n""")
-    liste_neighbor_add = []     #łiste pour éviter les doublons
-    ebgp_present = False
+
     for interface in router.liste_int:
         if "EBGP" in interface.protocol_list:
-            ebgp_present = True
+            list_as_networks = []
+            for routers in router_list:
+                for interfaces in routers.liste_int:
+                    if ipaddress.IPv6Interface(interfaces.address).network not in list_as_networks and router.AS_name == routers.AS_name and interfaces.name != "LOOPBACK0":
+                        list_as_networks.append(ipaddress.IPv6Interface(interfaces.address).network)
+                        conf.write(f"""  network {list_as_networks[-1]}\n""") 
     for interface in router.liste_int:
         if "EBGP" in interface.protocol_list or interface.name == "LOOPBACK0":
             for neighbor in interface.neighbors_address:
-                if neighbor not in liste_neighbor_add:
-                    #(garder seulement l'addresse sans le mask)
-                    conf.write(f"""  neighbor {neighbor.split('/', 1)[0]} activate\n""")
-                    #si on a un protocol EBGP sur cette interface, on n'active pas next-hop-self
-                    if ebgp_present and interface.name == "LOOPBACK0":
-                        conf.write(f"""  neighbor {neighbor.split('/', 1)[0]} next-hop-self\n""")
+                #(garder seulement l'addresse sans le mask)
+                conf.write(f"""  neighbor {neighbor.split('/', 1)[0]} activate\n""")
+                conf.write(f"""  neighbor {neighbor.split('/', 1)[0]} next-hop-self\n""")
     conf.write(""" exit-address-family
 !\n""")
