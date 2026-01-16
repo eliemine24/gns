@@ -69,6 +69,9 @@ def generate_interface(interface_name, interface_info, as_obj):
     #ajouter EBGP en protocol si il y a un parametre "protocol" dans l'intent file
     else:
         interface.protocol_list.append(interface_info.get("PROTOCOL",""))
+    #ajout du cout du lien si l'interface communique en ospf
+    if "COST" in interface_info:
+        interface.cost = interface_info.get("COST", "")
     return interface
 
 
