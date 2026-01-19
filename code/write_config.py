@@ -78,12 +78,6 @@ ip tcp synwait-time 5
 """)
 
 def write_end(conf, router):
-    conf.write("""ip forward-protocol nd
-!
-!
-no ip http server
-no ip http secure-server
-!\n""")
     protocol = "OSPF"
     for int in router.liste_int:
         if "RIP" in int.protocol_list:
@@ -279,3 +273,21 @@ def write_ipv6_address_family(conf, router, router_list, as_list):
             pass
 
         # conditions selon peer, client, ou provider. 
+        conf.write("""!         
+ip forward-protocol nd
+!         
+!         
+no ip http server
+no ip http secure-server
+!         
+!
+route-map client permit 10
+ set local-preference 200
+!         
+route-map provider permit 10
+ set local-preference 80
+!         
+route-map peer permit 10
+ set local-preference 90
+!         
+!\n""")
