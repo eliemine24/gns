@@ -229,29 +229,45 @@ def write_ipv4_address_family(conf):
 def write_ipv6_address_family(conf, router, router_list, as_list):
     """Écrit la configuration address-family IPv6."""
     conf.write(""" address-family ipv6\n""")
-    ebgp_present = False
+    
+    #on va chercher toutes les interfaces et configurer BGP sur chacun d'entre eux: EBGP pour les interfaces en bordure et IBGP pour les loopbacks
+
     for interface in router.liste_int:
+
+        #si on a du EBGP on va network les réseaux de son AS qui ne sont pas des loopbacks
         if "EBGP" in interface.protocol_list:
+
+            #on initialise une liste pour stocker les réseaux qui existent dans l'AS
             list_as_networks = []
-            ebgp_present = True
+            #on cherche dans tout les routeurs du réseau toutes les interfaces de chaque routeur afin de trouver tous les réseaux de l'AS
             for routers in router_list:
                 for interfaces in routers.liste_int:
-                    if ipaddress.IPv6Interface(interfaces.address).network not in list_as_networks and router.AS_name == routers.AS_name and interfaces.name != "LOOPBACK0":
-                        list_as_networks.append(ipaddress.IPv6Interface(interfaces.address).network)
-                        conf.write(f"""  network {list_as_networks[-1]}\n""") 
-    for interface in router.liste_int:
-        if "EBGP" in interface.protocol_list or interface.name == "LOOPBACK0":
+                    #on formate l'adresse pour récupérer seulement son réseau
+                    réseau_interface_base = ipaddress.IPv6Interface(interfaces.address).network
+
+                    #si le réseau n'a pas déjà été vu et qu'il appartient à notre AS et que ce n'est pas un réseau de loopback alors on le network.
+                    if réseau_interface_base not in list_as_networks and router.AS_name == routers.AS_name and interfaces.name != "LOOPBACK0":
+                        list_as_networks.append(réseau_interface_base)
+                        conf.write(f"""  network {list_as_networks[-1]}\n""")
+
+            #si on a du EBGP on configure les neighbors de l'interface et on active next-hop-self
             for neighbor in interface.neighbors_address:
                 conf.write(f"""  neighbor {neighbor.split('/', 1)[0]} activate\n""")
-                if ebgp_present:
-                    conf.write(f"""  neighbor {neighbor.split('/', 1)[0]} next-hop-self\n""")
-    
+                conf.write(f"""  neighbor {neighbor.split('/', 1)[0]} next-hop-self\n""")
+
+        #sinon si on a une interface de loopback alors on configure l'IBGP avec toutes les autres adresses de loopback
+        elif interface.name == "LOOPBACK0":
+            for neighbor in interface.neighbors_address:
+                conf.write(f"""  neighbor {neighbor.split('/', 1)[0]} activate\n""")
+                
     # Write local preference based on relationship type (client=200, peer=90, provider=80)
     for inter in router.liste_int:
         if len(inter.neighbors_address) == 0:
             continue    # sortir si ya pas de voisins
         
         voisin = inter.neighbors_address[0] # un seul voisin par interface
+        if "EBGP" not in inter.protocol_list:
+            continue
         routeur_voisin = None
         
         # Find the neighbor router by its interface address
@@ -271,7 +287,6 @@ def write_ipv6_address_family(conf, router, router_list, as_list):
         as_router_voisin = None
         print(as_list)
         for current_as in as_list:
-            print(current_as)
             if current_as.name == routeur_voisin.AS_name:
                 as_router_voisin = current_as
                 print(as_router_voisin)

@@ -46,7 +46,7 @@ def generate_network_classes(int_file):
     
     # génération des AS
     for as_name, as_relations in intent["Intent"].items():
-        new_as = generate_AS(as_relations)
+        new_as = generate_AS(as_relations,intent)
         as_list.append(new_as)
 
     return router_list, as_list
@@ -81,21 +81,21 @@ def generate_interface(interface_name, interface_info, as_obj):
         interface.cost = interface_info.get("COST", "")
     return interface
 
-def generate_AS(as_relations):
+def generate_AS(as_relations,intent):
     """Génère les classes AS"""
     As = AS(as_relations.get("AS_NAME", ""))
     # ajoute chaque relation PEER à l'AS
     if "PEERS" in as_relations:
         for p in as_relations.get("PEERS", []):
-            As.peers.append(p)
+            As.peers.append(intent["Intent"][p]["AS_NAME"])
     # ajoute chaque relation PROVIDER à l'AS
     if "PROVIDERS" in as_relations:
         for p in as_relations.get("PROVIDERS", []):
-            As.providers.append(p)
+            As.providers.append(intent["Intent"][p]["AS_NAME"])
     # ajoute chaque relation CLIENT à l'AS
     if "CLIENTS" in as_relations:
         for c in as_relations.get("CLIENTS", []):
-            As.clients.append(c)
+            As.clients.append(intent["Intent"][c]["AS_NAME"])
     return As
 
 # =======================
