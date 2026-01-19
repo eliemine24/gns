@@ -84,12 +84,15 @@ def generate_interface(interface_name, interface_info, as_obj):
 def generate_AS(as_relations):
     """Génère les classes AS"""
     As = AS(as_relations.get("AS_NAME", ""))
+    # ajoute chaque relation PEER à l'AS
     if "PEERS" in as_relations:
         for p in as_relations.get("PEERS", []):
             As.peers.append(p)
+    # ajoute chaque relation PROVIDER à l'AS
     if "PROVIDERS" in as_relations:
         for p in as_relations.get("PROVIDERS", []):
             As.providers.append(p)
+    # ajoute chaque relation CLIENT à l'AS
     if "CLIENTS" in as_relations:
         for c in as_relations.get("CLIENTS", []):
             As.clients.append(c)
