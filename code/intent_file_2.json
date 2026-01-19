@@ -2,15 +2,15 @@
     "Intent":{
         "AS1":{
             "AS_NAME":"1111",
-            "PEERS":"[AS2]",
-            "PROVIDERS":"[]",
-            "CLIENTS":"[]"
+            "PEERS":["AS2"],
+            "PROVIDERS":[],
+            "CLIENTS":[]
         },
         "AS2":{
             "AS_NAME":"2222",
-            "PEERS":"[AS1]",
-            "PROVIDERS":"[]",
-            "CLIENTS":"[]"
+            "PEERS":["AS1"],
+            "PROVIDERS":[],
+            "CLIENTS":[]
         }
     },
     "Structure":{
