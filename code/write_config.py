@@ -8,7 +8,7 @@ from datetime import datetime
 import ipaddress
 
 
-def write_config(router, out_file,router_list):
+def write_config(router, out_file,router_list, as_list):
     """Écrit la configuration complète d'un routeur dans un fichier .cfg."""
     conf = open(out_file, 'w')
     write_header(conf, router)

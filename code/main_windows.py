@@ -20,7 +20,7 @@ print(f"LPATH : {LPATH}")
 print(f"HPATH : {HPATH}\n")
 
 # génération des routeurs et interfaces
-router_list = generate_network_classes(LPATH + FILE_NAME)
+router_list, as_list = generate_network_classes(LPATH + FILE_NAME)
 
 # affichage 
 """
@@ -33,7 +33,7 @@ for r in router_list:
 # écriture cfg 
 for r in router_list:
     outfile = LPATH+r.name+ ".cfg"
-    write_config(r, outfile, router_list)
+    write_config(r, outfile, router_list, as_list)
 
 # drag n drop
 REPONAMES = find_repository_names(router_list, PROJECT_NAME, HPATH)
