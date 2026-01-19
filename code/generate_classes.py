@@ -99,16 +99,17 @@ def generate_AS(as_name, as_relations):
 # === TESTS FONCTIONS ===
 # =======================
 # (ça fonctionne)
-
+"""
 local_path = find_local_path()
 print(f"local path : {local_path}")
 
 router_list, as_list = generate_network_classes(local_path + "/intent_file.json")
-"""
+
 for r in router_list:
     print(f"{r.name} (AS {r.AS_name}) | {r.ID} | {r.nb_int}")
     for i in r.liste_int:
         print(f"  {i.name} {i.address} {i.protocol_list} neighbors: {i.neighbors_address}")
-"""
+
 for a in as_list:
     print(f"{a.name} peers : {a.peers}, clients : {a.clients}, providers : {a.providers}")
+"""
