@@ -96,7 +96,7 @@ def generer_registre_complet(donnees):
                     
     return registre
 
-def generer_plan_final(intention):
+def generer_plan_adressage(intention):
     registre = generer_registre_complet(intention)
     resultat = {"Intent": {}, "Structure": {}}
 
