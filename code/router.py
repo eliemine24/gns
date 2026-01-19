@@ -12,4 +12,4 @@ class Router():
         self.AS_name = ""
 
     def __str__(self):
-        print(f"router name : {self.name} (AS {self.AS_name}) \nrouter ID : {self.ID} \ninterfaces : {self.nb_int} \nprotocols : {self.protocol_list}")
+        return f"router name : {self.name} (AS {self.AS_name}) | router ID : {self.ID} | interfaces : {self.nb_int}"
