@@ -273,11 +273,11 @@ def write_ipv6_address_family(conf, router, router_list, as_list):
             conf.write(f"""neighbor {inter.neighbors_address[0]} activate\n""")
             conf.write(f"""neighbor {inter.neighbors_address[0]} route-map provider out\n""")
         
-        conf.write(""" exit-address-family
+    conf.write(""" exit-address-family
 !\n""")
 
-        # conditions selon peer, client, ou provider. 
-        conf.write("""!         
+    # conditions selon peer, client, ou provider. 
+    conf.write("""!         
 ip forward-protocol nd
 !         
 !         
@@ -286,12 +286,12 @@ no ip http secure-server
 !         
 !
 route-map client permit 10
- set local-preference 200
+set local-preference 200
 !         
 route-map provider permit 10
- set local-preference 80
+set local-preference 80
 !         
 route-map peer permit 10
- set local-preference 90
+set local-preference 90
 !         
 !\n""")
