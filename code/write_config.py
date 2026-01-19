@@ -232,70 +232,64 @@ def write_ipv6_address_family(conf, router, router_list, as_list):
     for interface in router.liste_int:
         if "EBGP" in interface.protocol_list or interface.name == "LOOPBACK0":
             for neighbor in interface.neighbors_address:
-                #(garder seulement l'addresse sans le mask)
                 conf.write(f"""  neighbor {neighbor.split('/', 1)[0]} activate\n""")
                 if ebgp_present:
                     conf.write(f"""  neighbor {neighbor.split('/', 1)[0]} next-hop-self\n""")
     
-    # ecrire les local pref en fonction de si le voisnn est dans l'AS, dans un AS perr, provider ou client (200 pour client, 90 pour peer, 80 pour provider)
-    # pour chaque voisin de chaque interface : 
+    # Write local preference based on relationship type (client=200, peer=90, provider=80)
     for inter in router.liste_int:
         if len(inter.neighbors_address) == 0:
-            break
+            continue
+        
         voisin = inter.neighbors_address[0]
-        # vérifier si l'addresse du voisin est dans un as peer, client, provider ou meme AS : 
-        # récupérer l'adresse, aller dans dans router list, retrouver le router correspondant à l'addresse
-        voisin_found = False
+        routeur_voisin = None
+        
+        # Find the neighbor router by its interface address
         for r in router_list:
             for i in r.liste_int:
-                if "LOOPBACK" not in i.name and i.neighbors_address[0] == voisin :
+                if i.address.split('/', 1)[0] == voisin.split('/', 1)[0]:
                     routeur_voisin = r
-                    voisin_found = True
                     break
-            if voisin_found:
+            if routeur_voisin:
                 break
         
-        # aller dans l'AS list, trouver si le router est dans le même AS, dans un peer ou etc
+        if not routeur_voisin:
+            continue
+        
+        # Find the AS of the neighbor router
+        as_router_voisin = None
         for current_as in as_list:
             if current_as.name == routeur_voisin.AS_name:
                 as_router_voisin = current_as
                 break
         
-        # pour un interface int : - routeur_voisin, as_router_voisin
-        if router.AS_name in as_router_voisin.providers :
-            # write local pref  for client corresponding 200
-            conf.write(f"""neighbor {inter.neighbors_address[0]} activate\n""")
-            conf.write(f"""neighbor {inter.neighbors_address[0]} route-map client out\n""")
-
-        if router.AS_name in as_router_voisin.peers :
-            # write local pref for peer corresponding to 90
-            conf.write(f"""neighbor {inter.neighbors_address[0]} activate\n""")
-            conf.write(f"""neighbor {inter.neighbors_address[0]} route-map peer out\n""")
-
-        if router.AS_name in as_router_voisin.clients :
-            # write local pref for provider corresponding to 80
-            conf.write(f"""neighbor {inter.neighbors_address[0]} activate\n""")
-            conf.write(f"""neighbor {inter.neighbors_address[0]} route-map provider out\n""")
+        if not as_router_voisin:
+            continue
+        
+        # Check relationship: is current router a PROVIDER, PEER, or CLIENT of neighbor AS?
+        if router.AS_name in as_router_voisin.providers:
+            conf.write(f"""  neighbor {voisin.split('/', 1)[0]} route-map client out\n""")
+        elif router.AS_name in as_router_voisin.peers:
+            conf.write(f"""  neighbor {voisin.split('/', 1)[0]} route-map peer out\n""")
+        elif router.AS_name in as_router_voisin.clients:
+            conf.write(f"""  neighbor {voisin.split('/', 1)[0]} route-map provider out\n""")
         
     conf.write(""" exit-address-family
-!\n""")
-
-    # conditions selon peer, client, ou provider. 
-    conf.write("""!         
+!
 ip forward-protocol nd
-!         
-!         
+!
+!
 no ip http server
 no ip http secure-server
-!         
+!
 !
 route-map client permit 10
-set local-preference 200
-!         
+ set local-preference 200
+!
 route-map provider permit 10
-set local-preference 80
-!         
+ set local-preference 80
+!
 route-map peer permit 10
-set local-preference 90
-!         
+ set local-preference 90
+!
 !\n""")
