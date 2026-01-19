@@ -225,10 +225,11 @@ def write_ipv4_address_family(conf):
 def write_ipv6_address_family(conf, router, router_list):
     """Écrit la configuration address-family IPv6."""
     conf.write(""" address-family ipv6\n""")
-
+    ebgp_present = False
     for interface in router.liste_int:
         if "EBGP" in interface.protocol_list:
             list_as_networks = []
+            ebgp_present = True
             for routers in router_list:
                 for interfaces in routers.liste_int:
                     if ipaddress.IPv6Interface(interfaces.address).network not in list_as_networks and router.AS_name == routers.AS_name and interfaces.name != "LOOPBACK0":
@@ -239,6 +240,7 @@ def write_ipv6_address_family(conf, router, router_list):
             for neighbor in interface.neighbors_address:
                 #(garder seulement l'addresse sans le mask)
                 conf.write(f"""  neighbor {neighbor.split('/', 1)[0]} activate\n""")
-                conf.write(f"""  neighbor {neighbor.split('/', 1)[0]} next-hop-self\n""")
+                if ebgp_present:
+                    conf.write(f"""  neighbor {neighbor.split('/', 1)[0]} next-hop-self\n""")
     conf.write(""" exit-address-family
 !\n""")
