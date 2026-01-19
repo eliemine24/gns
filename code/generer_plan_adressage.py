@@ -84,19 +84,16 @@ def creer_registre_adresses(donnees_intention):
                 paire_lien = tuple(sorted((nom_r, voisin)))
 
                 if paire_lien not in liens_termines:
-                    # Cas eBGP (Inter-AS)
+                    # CAS EBGP : Nouveau sous-réseau /64 dédié
                     if info_int.get("PROTOCOL") == "EBGP":
-                        ips = (f"{PREFIXES_AS['INTER_AS'][31]}/64", f"{PREFIXES_AS['INTER_AS'][32]}/64")
+                        net = sous_reseaux_ebgp[index_ebgp]
+                        ips = (f"{net[1]}/64", f"{net[2]}/64")
+                        index_ebgp += 1
+                    # CAS INTERNE : Sous-réseau /64 de l'AS
                     else:
-                        # Liens internes : on découpe des sous-réseaux /64
-                        prefixe_as = PREFIXES_AS.get(id_as, PREFIXES_AS["AS1"])
-                        sous_reseaux = list(prefixe_as.subnets(new_prefix=64))
-                        
-                        # On utilise l'index de lien actuel pour cette AS
-                        idx = index_liens[id_as]
-                        reseau_lien = sous_reseaux[idx]
-                        ips = (f"{reseau_lien[11]}/64", f"{reseau_lien[12]}/64")
-                        index_liens[id_as] += 1
+                        net = sous_reseaux_as[index_interne[id_as]]
+                        ips = (f"{net[1]}/64", f"{net[2]}/64")
+                        index_interne[id_as] += 1
                     
                     # On enregistre l'IP pour le routeur A et le routeur B
                     registre[paire_lien[0]][nom_int] = ips[0]
