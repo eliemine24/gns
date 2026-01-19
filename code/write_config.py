@@ -222,13 +222,14 @@ def write_ipv4_address_family(conf):
  !\n""")
 
 
-def write_ipv6_address_family(conf, router, router_list):
+def write_ipv6_address_family(conf, router, router_list, as_list):
     """Écrit la configuration address-family IPv6."""
     conf.write(""" address-family ipv6\n""")
-
+    ebgp_present = False
     for interface in router.liste_int:
         if "EBGP" in interface.protocol_list:
             list_as_networks = []
+            ebgp_present = True
             for routers in router_list:
                 for interfaces in routers.liste_int:
                     if ipaddress.IPv6Interface(interfaces.address).network not in list_as_networks and router.AS_name == routers.AS_name and interfaces.name != "LOOPBACK0":
@@ -239,6 +240,42 @@ def write_ipv6_address_family(conf, router, router_list):
             for neighbor in interface.neighbors_address:
                 #(garder seulement l'addresse sans le mask)
                 conf.write(f"""  neighbor {neighbor.split('/', 1)[0]} activate\n""")
-                conf.write(f"""  neighbor {neighbor.split('/', 1)[0]} next-hop-self\n""")
+                if ebgp_present:
+                    conf.write(f"""  neighbor {neighbor.split('/', 1)[0]} next-hop-self\n""")
     conf.write(""" exit-address-family
 !\n""")
+    
+    # ecrire les local pref en fonction de si le voisnn est dans l'AS, dans un AS perr, provider ou client (200 pour client, 90 pour peer, 80 pour provider)
+    # pour chaque voisin de chaque interface : 
+    for inter in router.liste_int:
+        voisin = inter.neighbors_address[0]
+        # vérifier si l'addresse du voisin est dansun as peer, client, provider ou meme AS : 
+        # récupérer l'adresse, aller dans dans router list, retrouver le router correspondant à l'addresse
+        for r in router_list:
+            for i in r.liste_int:
+                if i.neighbors_address[0] == voisin :
+                    routeur_voisin = r
+                    break
+            if routeur_voisin:
+                break
+        
+        # aller dans l'AS list, trouver si le router est dans le même AS, dans un peer ou etc
+        for AS in as_list:
+            if AS.name == routeur_voisin.AS_name:
+                as_router_voisin = AS
+                break
+        
+        # pour un interface int : - routeur_voisin, as_router_voisin
+        if router.AS_name in as_router_voisin.provider :
+            # write local pref 200
+            pass
+
+        if router.AS_name in as_router_voisin.peer :
+            # write local pref  90
+            pass
+
+        if router.AS_name in as_router_voisin.client :
+            # write local pref 80
+            pass
+
+        # conditions selon peer, client, ou provider. 
