@@ -236,8 +236,6 @@ def write_ipv6_address_family(conf, router, router_list, as_list):
                 conf.write(f"""  neighbor {neighbor.split('/', 1)[0]} activate\n""")
                 if ebgp_present:
                     conf.write(f"""  neighbor {neighbor.split('/', 1)[0]} next-hop-self\n""")
-    conf.write(""" exit-address-family
-!\n""")
     
     # ecrire les local pref en fonction de si le voisnn est dans l'AS, dans un AS perr, provider ou client (200 pour client, 90 pour peer, 80 pour provider)
     # pour chaque voisin de chaque interface : 
@@ -261,16 +259,22 @@ def write_ipv6_address_family(conf, router, router_list, as_list):
         
         # pour un interface int : - routeur_voisin, as_router_voisin
         if router.AS_name in as_router_voisin.provider :
-            # write local pref 200
-            pass
+            # write local pref  for client corresponding 200
+            conf.write(f"""neighbor {inter.neighbors_address[0]} activate\n""")
+            conf.write(f"""neighbor {inter.neighbors_address[0]} route-map client out\n""")
 
         if router.AS_name in as_router_voisin.peer :
-            # write local pref  90
-            pass
+            # write local pref for peer corresponding to 90
+            conf.write(f"""neighbor {inter.neighbors_address[0]} activate\n""")
+            conf.write(f"""neighbor {inter.neighbors_address[0]} route-map peer out\n""")
 
         if router.AS_name in as_router_voisin.client :
-            # write local pref 80
-            pass
+            # write local pref for provider corresponding to 80
+            conf.write(f"""neighbor {inter.neighbors_address[0]} activate\n""")
+            conf.write(f"""neighbor {inter.neighbors_address[0]} route-map provider out\n""")
+        
+        conf.write(""" exit-address-family
+!\n""")
 
         # conditions selon peer, client, ou provider. 
         conf.write("""!         
