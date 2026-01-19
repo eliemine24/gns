@@ -9,13 +9,12 @@
 
 **langage** : `python`
 
-## Découpage
+## STRUCTURE DE DONNÉES
 
-On dispose de classes `routers` et `interfaces` pour stockers touts les infos sur les routers et interfaces
+On part d'un fichier d'intention décrivant les AS, les relations inter-AS, les routers, et les connexion entre les interfaces de chauqe router.
 
-### CONFIGURATION DU RÉSEAU
-- Ouverture / lecture du fichier d'intention
-- recherche des routeurs dans l'arborescence du GNS
+### CRÉATION DES CLASSES 
+- ouverture / lecture du fichier d'intention
 - récupération des noms des routeurs (+ vérification du nb) et (création d'une liste de classes ?)
 - (vérification des liens)
 - configuration des routeurs = rédaction des .cfg de chaque routeur et placement dans l'arborescence
@@ -29,11 +28,11 @@ On dispose de classes `routers` et `interfaces` pour stockers touts les infos su
 - modification du `.cfg` à partir des infos récupérées 
 - placement du `.cfg` dans l'arborescence (attention les noms dans l'arborescence sont anonymes)
 
-### RÉDATION DU `.cfg` :
+### RÉDACTION DU `.cfg` :
 - header
 - liste des interfaces
 - liste des routers par protocole
-- address-family (?)
+- router et règles bgp
 
 
 
@@ -43,6 +42,7 @@ On dispose de classes `routers` et `interfaces` pour stockers touts les infos su
 
 - `router` : name, interfaces_number, interfaces_list, protocols_list
 - `interface` : name, address, neighbors_address, protocol
+- `AS` : name, providers, peers, clients
 
 ### Fonctions
 
