@@ -32,9 +32,8 @@ def find_repository_names(routers_list, project_name, general_path):
             if node.get("name") == router.name:
                 repo_name = node.get("node_id")
                 if repo_name:
-                    repo_names[router.name] = repo_name
+                    repo_names[router.name] = [repo_name, node.get("properties").get("dynamips_id")]
                 break
-    
     return repo_names
 
 # Déplacer un fichier fichier file depuis l'emplacement du script jusqu'à l'emplacement final
@@ -53,5 +52,5 @@ def drag_and_drop(project_path, gns_path, repo_names) :
     for router_name, dest_router_folder in repo_names.items() :
         
         file = router_name+".cfg"
-        final_file = "i" + router_name[1:] + "_startup-config" +".cfg"
-        place_file(file, project_path, gns_path, dest_router_folder, final_file)
+        final_file = "i" + str(dest_router_folder[1]) + "_startup-config" +".cfg"
+        place_file(file, project_path, gns_path, dest_router_folder[0], final_file)
