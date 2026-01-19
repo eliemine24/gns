@@ -239,28 +239,32 @@ def write_ipv6_address_family(conf, router, router_list, as_list):
     # Write local preference based on relationship type (client=200, peer=90, provider=80)
     for inter in router.liste_int:
         if len(inter.neighbors_address) == 0:
-            continue
+            continue    # sortir si ya pas de voisins
         
-        voisin = inter.neighbors_address[0]
+        voisin = inter.neighbors_address[0] # un seul voisin par interface
         routeur_voisin = None
         
         # Find the neighbor router by its interface address
         for r in router_list:
             for i in r.liste_int:
-                if i.address.split('/', 1)[0] == voisin.split('/', 1)[0]:
+                if i.address.split('/', 1)[0] == voisin.split('/', 1)[0]:   # enlever le mask bien vu
                     routeur_voisin = r
+                    #print(routeur_voisin)
                     break
             if routeur_voisin:
-                break
+                break   # ne pas continuer si on a trouvé le router voisin
         
         if not routeur_voisin:
             continue
         
         # Find the AS of the neighbor router
         as_router_voisin = None
+        print(as_list)
         for current_as in as_list:
+            print(current_as)
             if current_as.name == routeur_voisin.AS_name:
                 as_router_voisin = current_as
+                print(as_router_voisin)
                 break
         
         if not as_router_voisin:
