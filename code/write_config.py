@@ -175,6 +175,8 @@ def write_GE(conf, interface):
     conf.write(f""" ipv6 address {interface.address}\n""")
     if "OSPF" in interface.protocol_list :
         conf.write(""" ipv6 ospf 10 area 0\n""")
+        if interface.cost != "":
+            conf.write(f"""ipv6 ospf cost {interface.cost}\n""")
     elif "RIP" in interface.protocol_list:
         conf.write(""" ipv6 rip maison enable\n""")
     conf.write(f"""!\n""")
