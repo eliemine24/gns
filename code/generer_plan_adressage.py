@@ -38,52 +38,47 @@ def sauvegarder_dict_en_json(dictionnaire, chemin_destination):
 
 
 
-# --- CONFIGURATION DES RÉSEAUX DE BASE ---
+
+
+# --- CONFIGURATION DES RÉSEAUX ---
 PREFIXES_AS = {
     "AS1": ipaddress.IPv6Network("1111::/48"),
     "AS2": ipaddress.IPv6Network("2222::/48"),
-    "INTER_AS": ipaddress.IPv6Network("3333::/64")
+    "INTER_AS": ipaddress.IPv6Network("3333::/48") # Changé en /48 pour pouvoir créer des sous-réseaux /64
 }
 
-def extraire_numero_routeur(nom):
-    """Récupère le numéro dans le nom du routeur (ex: 'R12' -> 12)."""
+def extraire_num(nom):
     chiffres = ''.join(filter(str.isdigit, nom))
     return int(chiffres) if chiffres else 0
 
-def generer_ip_loopback(nom_as, nom_routeur):
-    """Génère une Loopback unique (Format: AS:3::11X)."""
-    num = extraire_numero_routeur(nom_routeur)
-    # On prend le premier sous-réseau /64 de l'AS, et on modifie le 4ème quartet pour le '3'
-    base = str(PREFIXES_AS[nom_as][0]).replace('::', f':3::11{num}')
-    return f"{base}/128"
-
-def creer_registre_adresses(donnees_intention):
-    """
-    Parcourt le fichier d'intention pour calculer et stocker 
-    toutes les adresses dans un registre central.
-    """
+def generer_registre_complet(donnees):
     registre = {}
-    liens_termines = set()
-    index_liens = {"AS1": 1, "AS2": 1}
+    liens_faits = set()
+    
+    # Compteurs pour découper les sous-réseaux
+    index_interne = {"AS1": 1, "AS2": 1}
+    index_ebgp = 1 # Compteur global pour les liens entre AS
 
-    # On explore chaque AS dynamiquement
-    for id_as, contenu_as in donnees_intention["Structure"].items():
+    # On pré-découpe les sous-réseaux eBGP
+    sous_reseaux_ebgp = list(PREFIXES_AS["INTER_AS"].subnets(new_prefix=64))
+
+    for id_as, contenu_as in donnees["Structure"].items():
+        prefixe_as = PREFIXES_AS[id_as]
+        sous_reseaux_as = list(prefixe_as.subnets(new_prefix=64))
+
         for nom_r, contenu_r in contenu_as["ROUTERS"].items():
             registre.setdefault(nom_r, {})
             
-            # 1. Attribution de la Loopback
-            registre[nom_r]["LOOPBACK0"] = generer_ip_loopback(id_as, nom_r)
+            # 1. LOOPBACK (Index 0 du préfixe AS)
+            registre[nom_r]["LOOPBACK0"] = f"{sous_reseaux_as[0][extraire_num(nom_r)]}/128"
 
-            # 2. Attribution des interfaces physiques
+            # 2. INTERFACES PHYSIQUES
             for nom_int, info_int in contenu_r["INTERFACES"].items():
-                # On identifie le voisin
                 voisin = list(info_int["NEIGHBORS"].keys())[0]
-                interface_voisin = info_int["NEIGHBORS"][voisin]
-                
-                # Identifiant unique du lien (indépendant de l'ordre)
-                paire_lien = tuple(sorted((nom_r, voisin)))
+                int_voisin = info_int["NEIGHBORS"][voisin]
+                paire = tuple(sorted((nom_r, voisin)))
 
-                if paire_lien not in liens_termines:
+                if paire not in liens_faits:
                     # CAS EBGP : Nouveau sous-réseau /64 dédié
                     if info_int.get("PROTOCOL") == "EBGP":
                         net = sous_reseaux_ebgp[index_ebgp]
@@ -95,49 +90,14 @@ def creer_registre_adresses(donnees_intention):
                         ips = (f"{net[1]}/64", f"{net[2]}/64")
                         index_interne[id_as] += 1
                     
-                    # On enregistre l'IP pour le routeur A et le routeur B
-                    registre[paire_lien[0]][nom_int] = ips[0]
-                    registre.setdefault(paire_lien[1], {})[interface_voisin] = ips[1]
+                    registre[paire[0]][nom_int] = ips[0]
+                    registre.setdefault(paire[1], {})[int_voisin] = ips[1]
+                    liens_faits.add(paire)
                     
-                    liens_termines.add(paire_lien)
     return registre
 
-def formater_routeur(nom_r, contenu_r, registre, liste_routeurs_as):
-    """Construit le dictionnaire final pour un routeur donné."""
-    num = extraire_numero_routeur(nom_r)
-    
-    donnees_finales = {
-        "ROUTER_ID": f"{num}.{num}.{num}.{num}",
-        "INTERFACES": {}
-    }
-
-    # Interfaces physiques
-    for nom_int, info_int in contenu_r["INTERFACES"].items():
-        nom_voisin = list(info_int["NEIGHBORS"].keys())[0]
-        int_voisin = info_int["NEIGHBORS"][nom_voisin]
-        
-        details = {
-            "ADDRESS": registre[nom_r][nom_int],
-            "NEIGHBORS_ADDRESS": [registre[nom_voisin][int_voisin]]
-        }
-        # On conserve les propriétés optionnelles
-        if "PROTOCOL" in info_int: details["PROTOCOL"] = info_int["PROTOCOL"]
-        if "COST" in info_int: details["COST"] = info_int["COST"]
-        
-        donnees_finales["INTERFACES"][nom_int] = details
-
-    # Loopback (Voisins iBGP = tous les autres routeurs de la même AS)
-    voisins_ibgp = [registre[autre]["LOOPBACK0"] for autre in liste_routeurs_as if autre != nom_r]
-    donnees_finales["INTERFACES"]["LOOPBACK0"] = {
-        "ADDRESS": registre[nom_r]["LOOPBACK0"],
-        "NEIGHBORS_ADDRESS": voisins_ibgp
-    }
-
-    return donnees_finales
-
-def generer_plan_adressage(intention):
-    """Fonction principale qui transforme l'intention en plan d'adressage."""
-    registre = creer_registre_adresses(intention)
+def generer_plan_final(intention):
+    registre = generer_registre_complet(intention)
     resultat = {"Intent": {}, "Structure": {}}
 
     for id_as, contenu_as in intention["Structure"].items():
@@ -146,16 +106,32 @@ def generer_plan_adressage(intention):
             "PROTOCOL": contenu_as["PROTOCOL"],
             "ROUTERS": {}
         }
-        
-        dictionnaire_routeurs = contenu_as["ROUTERS"]
-        for nom_r, contenu_r in dictionnaire_routeurs.items():
-            # Génération dynamique basée sur la liste des routeurs de cette AS
-            resultat["Structure"][id_as]["ROUTERS"][nom_r] = formater_routeur(
-                nom_r, contenu_r, registre, list(dictionnaire_routeurs.keys())
-            )
+
+        for nom_r, contenu_r in contenu_as["ROUTERS"].items():
+            num = extraire_num(nom_r)
+            r_data = {"ROUTER_ID": f"{num}.{num}.{num}.{num}", "INTERFACES": {}}
+
+            # Interfaces physiques et eBGP
+            for nom_int, info_int in contenu_r["INTERFACES"].items():
+                nom_v = list(info_int["NEIGHBORS"].keys())[0]
+                int_v = info_int["NEIGHBORS"][nom_v]
+                
+                r_data["INTERFACES"][nom_int] = {
+                    "ADDRESS": registre[nom_r][nom_int],
+                    "NEIGHBORS_ADDRESS": [registre[nom_v][int_v]]
+                }
+                if "PROTOCOL" in info_int: r_data["INTERFACES"][nom_int]["PROTOCOL"] = "EBGP"
+
+            # Ajout Loopback avec tous les autres du même AS (Voisins iBGP)
+            autres_lb = [registre[r]["LOOPBACK0"] for r in contenu_as["ROUTERS"] if r != nom_r]
+            r_data["INTERFACES"]["LOOPBACK0"] = {
+                "ADDRESS": registre[nom_r]["LOOPBACK0"],
+                "NEIGHBORS_ADDRESS": autres_lb
+            }
+            
+            resultat["Structure"][id_as]["ROUTERS"][nom_r] = r_data
 
     return resultat
-
 
 #Lancement de tests
 
