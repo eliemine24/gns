@@ -23,6 +23,7 @@ def write_config(router, out_file,router_list, as_list):
 
 def write_header(conf, router):
     """Écrit l'en-tête de la configuration du routeur."""
+    # Récupère la date de modification sous le bon format
     date = datetime.now().strftime('%I:%M:%S UTC %a %b %d %Y')
     conf.write(f"""!
 ! Last configuration change at {date}
@@ -79,12 +80,15 @@ ip tcp synwait-time 5
 
 def write_end(conf, router):
     protocol = "OSPF"
+    # Vérifie si le protocole de l'AS est RIP, sinon garde OSPF
     for int in router.liste_int:
         if "RIP" in int.protocol_list:
             protocol = "RIP"
+    # Configurations RIP
     if protocol == "RIP":
         conf.write("""ipv6 router rip maison
  redistribute connected\n""")
+    # Configurations OSPF
     else: 
         conf.write(f"""ipv6 router ospf 10
  router-id {router.ID}\n""")
@@ -151,10 +155,13 @@ def write_FE(conf, interface):
     conf.write(""" ipv6 enable
 """)
     conf.write(f""" ipv6 address {interface.address}\n""")
+    # Configs OSPF
     if "OSPF" in interface.protocol_list :
         conf.write(""" ipv6 ospf 10 area 0\n""")
+        # Gère les couts si il y en a
         if interface.cost != "":
             conf.write(f"""ipv6 ospf cost {interface.cost}\n""")
+    # Configs RIP
     elif "RIP" in interface.protocol_list:
         conf.write(""" ipv6 rip maison enable\n""")
     conf.write(f"""!\n""")
@@ -169,10 +176,13 @@ def write_GE(conf, interface):
     conf.write(""" ipv6 enable
 """)
     conf.write(f""" ipv6 address {interface.address}\n""")
+    # Configs OSPF
     if "OSPF" in interface.protocol_list :
         conf.write(""" ipv6 ospf 10 area 0\n""")
+        # Gère les couts si il y en a
         if interface.cost != "":
             conf.write(f"""ipv6 ospf cost {interface.cost}\n""")
+    # Configs RIP
     elif "RIP" in interface.protocol_list:
         conf.write(""" ipv6 rip maison enable\n""")
     conf.write(f"""!\n""")
