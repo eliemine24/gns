@@ -4,6 +4,7 @@
 
 from router import Router
 from interface import Interface
+from AS import AS
 import os
 import json
 
@@ -28,6 +29,7 @@ def generate_network_classes(int_file):
     """Lit le fichier d'intention et crée toutes les classes nécessaires."""
     intent = json_to_dict(int_file)
     router_list = []
+    as_list = []
 
     # génération des routers
     for as_name, as_obj in intent["Structure"].items():
@@ -41,8 +43,13 @@ def generate_network_classes(int_file):
                     generate_interface(interface_name, interface_info, as_obj)
                 )
             router_list.append(new_router)
+    
+    # génération des AS
+    for as_name, as_relations in intent["Intent"].items():
+        new_as = generate_AS(as_name, as_relations)
+        as_list.append(new_as)
 
-    return router_list
+    return router_list, as_list
 
 
 def generate_router(router_name, router_info):
@@ -74,19 +81,34 @@ def generate_interface(interface_name, interface_info, as_obj):
         interface.cost = interface_info.get("COST", "")
     return interface
 
+def generate_AS(as_name, as_relations):
+    """Génère les classes AS"""
+    As = AS(as_name)
+    if "PEERS" in as_relations:
+        for p in as_relations.get("PEERS", []):
+            As.peers.append(p)
+    if "PROVIDERS" in as_relations:
+        for p in as_relations.get("PROVIDERS", []):
+            As.providers.append(p)
+    if "CLIENTS" in as_relations:
+        for c in as_relations.get("CLIENTS", []):
+            As.clients.append(c)
+    return As
 
 # =======================
 # === TESTS FONCTIONS ===
 # =======================
 # (ça fonctionne)
-"""
+
 local_path = find_local_path()
 print(f"local path : {local_path}")
 
-router_list = generate_network_classes(local_path + "/intent_file.json")
-
+router_list, as_list = generate_network_classes(local_path + "/intent_file.json")
+"""
 for r in router_list:
     print(f"{r.name} (AS {r.AS_name}) | {r.ID} | {r.nb_int}")
     for i in r.liste_int:
         print(f"  {i.name} {i.address} {i.protocol_list} neighbors: {i.neighbors_address}")
 """
+for a in as_list:
+    print(f"{a.name} peers : {a.peers}, clients : {a.clients}, providers : {a.providers}")
