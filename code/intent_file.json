@@ -101,7 +101,8 @@
 
                         "G2/0": {
                             "ADDRESS": "2222:0:0:1::11/64",
-                            "NEIGHBORS_ADDRESS":["2222:0:0:1::12/64"]
+                            "NEIGHBORS_ADDRESS":["2222:0:0:1::12/64"],
+                            "COST":100
                         },
 
                         "LOOPBACK0": {
@@ -120,12 +121,14 @@
 
                         "G1/0": {
                             "ADDRESS": "2222:0:0:2::21/64",
-                            "NEIGHBORS_ADDRESS": ["2222:0:0:2::22/64"]
+                            "NEIGHBORS_ADDRESS": ["2222:0:0:2::22/64"],
+                            "COST":100
                         },
 
                         "G2/0": {
                             "ADDRESS": "2222:0:0:1::12/64",
-                            "NEIGHBORS_ADDRESS": ["2222:0:0:1::11/64"] 
+                            "NEIGHBORS_ADDRESS": ["2222:0:0:1::11/64"],
+                            "COST":100
                         },
 
                         "LOOPBACK0": {
@@ -144,7 +147,8 @@
 
                         "G1/0": {
                             "ADDRESS": "2222:0:0:2::22/64",
-                            "NEIGHBORS_ADDRESS": ["2222:0:0:2::21/64"] 
+                            "NEIGHBORS_ADDRESS": ["2222:0:0:2::21/64"],
+                            "COST":100
                         },
 
                         "LOOPBACK0": {
