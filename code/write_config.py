@@ -15,7 +15,7 @@ def write_config(router, out_file,router_list, as_list):
     write_interfaces_config(conf, router)
     write_bgp_config(conf, router, router_list)
     write_ipv4_address_family(conf)
-    write_ipv6_address_family(conf, router, router_list)
+    write_ipv6_address_family(conf, router, router_list,as_list)
     write_end(conf, router)
     conf.close()
     return out_file
@@ -240,35 +240,39 @@ def write_ipv6_address_family(conf, router, router_list, as_list):
     # ecrire les local pref en fonction de si le voisnn est dans l'AS, dans un AS perr, provider ou client (200 pour client, 90 pour peer, 80 pour provider)
     # pour chaque voisin de chaque interface : 
     for inter in router.liste_int:
+        if len(inter.neighbors_address) == 0:
+            break
         voisin = inter.neighbors_address[0]
-        # vérifier si l'addresse du voisin est dansun as peer, client, provider ou meme AS : 
+        # vérifier si l'addresse du voisin est dans un as peer, client, provider ou meme AS : 
         # récupérer l'adresse, aller dans dans router list, retrouver le router correspondant à l'addresse
+        voisin_found = False
         for r in router_list:
             for i in r.liste_int:
-                if i.neighbors_address[0] == voisin :
+                if "LOOPBACK" not in i.name and i.neighbors_address[0] == voisin :
                     routeur_voisin = r
+                    voisin_found = True
                     break
-            if routeur_voisin:
+            if voisin_found:
                 break
         
         # aller dans l'AS list, trouver si le router est dans le même AS, dans un peer ou etc
-        for AS in as_list:
-            if AS.name == routeur_voisin.AS_name:
-                as_router_voisin = AS
+        for current_as in as_list:
+            if current_as.name == routeur_voisin.AS_name:
+                as_router_voisin = current_as
                 break
         
         # pour un interface int : - routeur_voisin, as_router_voisin
-        if router.AS_name in as_router_voisin.provider :
+        if router.AS_name in as_router_voisin.providers :
             # write local pref  for client corresponding 200
             conf.write(f"""neighbor {inter.neighbors_address[0]} activate\n""")
             conf.write(f"""neighbor {inter.neighbors_address[0]} route-map client out\n""")
 
-        if router.AS_name in as_router_voisin.peer :
+        if router.AS_name in as_router_voisin.peers :
             # write local pref for peer corresponding to 90
             conf.write(f"""neighbor {inter.neighbors_address[0]} activate\n""")
             conf.write(f"""neighbor {inter.neighbors_address[0]} route-map peer out\n""")
 
-        if router.AS_name in as_router_voisin.client :
+        if router.AS_name in as_router_voisin.clients :
             # write local pref for provider corresponding to 80
             conf.write(f"""neighbor {inter.neighbors_address[0]} activate\n""")
             conf.write(f"""neighbor {inter.neighbors_address[0]} route-map provider out\n""")

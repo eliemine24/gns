@@ -266,7 +266,7 @@ def generer_plan_adressage(intention):
 # Obtenir le chemin du dossier courant (où est situé ce script)
 dossier = os.path.dirname(os.path.abspath(__file__))
 # Construire le chemin du fichier d'intention
-f_entree = os.path.join(dossier, "intent_file_2.json")
+f_entree = os.path.join(dossier, "intent_file_2_encore_plus_gros_reseau.json")
 
 # Charger le fichier d'intention JSON
 intent = charger_json_en_dict(f_entree)
