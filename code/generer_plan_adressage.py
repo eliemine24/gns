@@ -261,11 +261,25 @@ def generer_plan_adressage(intention):
                 # Récupérer le voisin et son interface
                 nom_v = list(info_int["NEIGHBORS"].keys())[0]
                 int_v = info_int["NEIGHBORS"][nom_v]
-                # Créer l'entrée de l'interface avec ses adresses
-                r_data["INTERFACES"][nom_int] = {
-                    "ADDRESS": registre[nom_r][nom_int],
-                    "NEIGHBORS_ADDRESS": [registre[nom_v][int_v]]
-                }
+
+                #si un cost spécial pour OSPF existe, l'ajouter dans la configuration de l'interface
+                if "COST" in info_int.keys():
+
+                    # Créer l'entrée de l'interface avec ses adresses
+                    r_data["INTERFACES"][nom_int] = {
+                        "ADDRESS": registre[nom_r][nom_int],
+                        "NEIGHBORS_ADDRESS": [registre[nom_v][int_v]],
+                        "COST": info_int["COST"]
+                    }
+
+                else:
+
+                    # Créer l'entrée de l'interface avec ses adresses
+                    r_data["INTERFACES"][nom_int] = {
+                        "ADDRESS": registre[nom_r][nom_int],
+                        "NEIGHBORS_ADDRESS": [registre[nom_v][int_v]]
+                    }
+
                 # Ajouter le protocole eBGP si applicable
                 if "PROTOCOL" in info_int: r_data["INTERFACES"][nom_int]["PROTOCOL"] = "EBGP"
 

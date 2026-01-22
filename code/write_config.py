@@ -181,7 +181,7 @@ def write_GE(conf, interface):
         conf.write(""" ipv6 ospf 10 area 0\n""")
         # Gère les couts si il y en a
         if interface.cost != "":
-            conf.write(f"""ipv6 ospf cost {interface.cost}\n""")
+            conf.write(f""" ipv6 ospf cost {interface.cost}\n""")
     # Configs RIP
     elif "RIP" in interface.protocol_list:
         conf.write(""" ipv6 rip maison enable\n""")
@@ -285,11 +285,9 @@ def write_ipv6_address_family(conf, router, router_list, as_list):
         
         # Find the AS of the neighbor router
         as_router_voisin = None
-        print(as_list)
         for current_as in as_list:
             if current_as.name == routeur_voisin.AS_name:
                 as_router_voisin = current_as
-                print(as_router_voisin)
                 break
         
         if not as_router_voisin:
