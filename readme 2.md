@@ -1,6 +1,6 @@
 # Projet GNS Groupe 20
 
-Un projet Python permettant de générer automatiquement les fichiers de configuration pour des routeurs dans GNS3 à partir d'un fichier d'intention en `.json`.
+Un projet Python permettant de générer automatiquement les fichiers de configuration pour des routeurs dans GNS3 à partir d'un fichier d'intention en `.json`. 
 
 ## Description du Projet
 
@@ -9,6 +9,10 @@ Ce projet automatise la création et la configuration d'un réseau composé plus
 - Génère les classes et structures de données nécessaires pour représenter les AS, routeurs et interfaces
 - Crée les fichiers de configuration `.cfg` pour chaque routeur
 - Place automatiquement les fichiers générés dans GNS3
+
+## Auteurs
+
+Robin Jenny, Léa Danober, Elie Gautier et Rémi Duran 
 
 ## Fonctionnalités Principales
 
@@ -160,9 +164,6 @@ Voir [code_structure.md](code_structure.md) pour une documentation technique dé
 - Support complet IPv6 (en cours)
 - Optimisation du drag & drop bot
 
-## Auteurs
-
-Robin Jenny, Léa Danober, Elie Gautier et Rémi Duran  
 
 ## Notes Importantes
 
