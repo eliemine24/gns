@@ -8,22 +8,35 @@ from generate_classes import *
 from write_config import *
 from drag_n_drop_bot import find_repository_names, drag_and_drop
 from generer_plan_adressage import generer_plan_adressage
+import os
 
-LPATH = find_local_path() +"/"                        # chemin du script
-HPATH = LPATH.rstrip('/').rsplit('/', 1)[0]           # chemin du projet
-MAIN_DEST = HPATH + "/project-files/dynamips"         # destination générale des .cfg
-FILE_NAME = "intent_file_2_encore_plus_gros_reseau.json"
-INTENT = json_to_dict(FILE_NAME)             # fichier d'intention
-PROJECT_NAME = "projet_test"    #str(input("Nom du dossier contenant le projet : "))
+if os.name == 'nt':
+    LPATH = find_local_path() +"\\"                        # chemin du script
+    HPATH = LPATH.rstrip('\\').rsplit('\\', 1)[0]           # chemin du projet
+    MAIN_DEST = HPATH + "\\project-files\\dynamips"         # destination générale des .cfg
+    FILE_NAME = "code\\test.json"
+    INTENT = json_to_dict(FILE_NAME)             # fichier d'intention
+    PROJECT_NAME = "projet_test"#str(input("Nom du dossier contenant le projet : "))
+
+else:
+    LPATH = find_local_path() +"/"                        # chemin du script
+    HPATH = LPATH.rstrip('/').rsplit('/', 1)[0]           # chemin du projet
+    MAIN_DEST = HPATH + "/project-files/dynamips"         # destination générale des .cfg
+    FILE_NAME = "intent_file_2_encore_plus_gros_reseau.json"
+    INTENT = json_to_dict(FILE_NAME)             # fichier d'intention
+    PROJECT_NAME = "projet_test"    #str(input("Nom du dossier contenant le projet : "))
 
 print("--- pathes ---")
 print(f"LPATH : {LPATH}")
 print(f"HPATH : {HPATH}\n")
 
-generer_plan_adressage(INTENT)
+#generer_plan_adressage(INTENT)
 
 # génération des routeurs et interfaces
-router_list, as_list = generate_network_classes("test.json")
+if os.name == 'nt':
+    router_list, as_list = generate_network_classes(LPATH + FILE_NAME[5:])
+else:
+    router_list, as_list = generate_network_classes("test.json")
 
 # affichage 
 """
@@ -39,8 +52,8 @@ for r in router_list:
     write_config(r, outfile, router_list, as_list)
 
 # drag n drop
-# REPONAMES = find_repository_names(router_list, PROJECT_NAME, HPATH)
-# print("--- reponames ---")
-# print(REPONAMES)
+REPONAMES = find_repository_names(router_list, PROJECT_NAME, HPATH)
+print("--- reponames ---")
+print(REPONAMES)
 
-#drag_and_drop(LPATH, HPATH+"/projet_test/", REPONAMES)
+drag_and_drop(LPATH, HPATH+"/projet_test/", REPONAMES)
