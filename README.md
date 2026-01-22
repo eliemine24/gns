@@ -1,6 +1,6 @@
 # GNS - Network Automation Project
 
-Léa Danober, Robin Jenny, Rémi Durand, Élie Gautier
+Auteur·ice·s : Léa Danober, Robin Jenny, Rémi Durand, Élie Gautier
 
 ## Description 
 
@@ -101,25 +101,25 @@ _Attention, si le réseau du GNS3 ne correspond pas à celui décrit dans l'inte
 
 ## Structure du code 
 
-1. Addressage : `generer_plan_adressage.py`
+### Addressage : `generer_plan_adressage.py`
 
 - lecture de l'intent file,
 - affectation d'adresses IPv6 à chaque interface (physique et loopback)
 - écriture d'un fichier `test.json` décrivant le réseau et toutes les adresses
 
-2. Génération de classes : `generate_classes.py`
+### Génération de classes : `generate_classes.py`
 
 - lecture de `test.json`
 - génération des classes AS, Router et Interface pour l'écriture des fichiers de config plus tard. 
 
-3. Écriture des configurations : `write_config.py`
+### Écriture des configurations : `write_config.py`
 
 - pour chaque router X : 
     - création d'un ficher `RX.gns` (dans le répertoire courant)
     - écrituture de la configuration des interfaces à partir des classes `Router` et `Interfaces`
     - écriture des configuration  BGP à partir de `AS`, `Router` et `Interfaces`.
 
-4. Drag and drop : `drag_n_drop_bot.py`
+### Drag and drop : `drag_n_drop_bot.py`
 
 - parcours de l'arborescence de `../network/` pour récupérer les noms des dossiers contenant les fichiers de configuration des routeurs.
-- 
+- à partir de ces noms de dossier, place les fichiers dans l'arborescence 
