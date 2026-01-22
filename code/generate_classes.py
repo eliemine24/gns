@@ -46,8 +46,9 @@ def generate_network_classes(int_file):
     
     # génération des AS
     for as_name, as_relations in intent["Intent"].items():
-        new_as = generate_AS(as_relations,intent)
-        as_list.append(new_as)
+        if as_name != "EBGP_ADDRESSING_RANGE":
+            new_as = generate_AS(as_relations,intent)
+            as_list.append(new_as)
 
     return router_list, as_list
 

@@ -1,5 +1,6 @@
 {
     "Intent":{
+        "EBGP_ADDRESSING_RANGE": "9999::/48",
         "AS1":{
             "AS_NAME":"1111",
             "PEERS":["AS2"],
@@ -31,6 +32,7 @@
 
             "AS_NAME" : "1111",
             "PROTOCOL": "RIP",
+            "ADDRESSING_RANGE": "1111::/48",
 
             "ROUTERS":{
 
@@ -189,6 +191,7 @@
 
             "AS_NAME" : "2222",
             "PROTOCOL": "OSPF",
+            "ADDRESSING_RANGE": "2222::/48",
 
             "ROUTERS":{
 
@@ -332,6 +335,7 @@
 
             "AS_NAME" : "3333",
             "PROTOCOL": "RIP",
+            "ADDRESSING_RANGE": "3333::/48",
 
             "ROUTERS":{
 
@@ -352,6 +356,7 @@
 
             "AS_NAME" : "4444",
             "PROTOCOL": "RIP",
+            "ADDRESSING_RANGE": "4444::/48",
 
             "ROUTERS":{
 
@@ -372,6 +377,7 @@
 
             "AS_NAME" : "5555",
             "PROTOCOL": "RIP",
+            "ADDRESSING_RANGE": "5555::/48",
 
             "ROUTERS":{
 
