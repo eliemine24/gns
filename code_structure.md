@@ -1,17 +1,22 @@
-# Structure du code
+# GNS - Network Automation Project
 
-**ressources** : 
+Léa Danober, Robin Jenny, Rémi Durand, Élie Gautier
+
+## Description 
+
+**Ressources** : 
+
 - architecture déjà prête (routeurs, interfaces, liens)
 - arborescence GNS (`./project_name/project-files/dynamips/router_ids/configs/iX_startup_config.cfg`)
-- fichier network intent (json)
+- fichier d'intention décrivant le réseau : AS, routeurs, interfaces des routers et liens entre eux. Pas d'adresses prédéfinies
 
-**sortie du programme** : fichier `.cfg` de chaque routeurs du réseau, placé correctement dans l'arborescence (drag & drop bot)
+**Objectifs du script** : 
+
+- lire le fichier d'intention et affecter des adresses (IPv6) aux interfaces des routeurs (GigabitEthernet et Loopback pour BGP)
+- écrire les fichiers de configuration des routeurs (fichier `.cfg`) pour que le réseau fonctionne dès l'ouverture du fichier `.gns3` simulant le réseau
+- drag and drop bot : placer les fichiers de configuration correctement dans l'arborescence du projet GNS.
 
 **langage** : `python`
-
-## STRUCTURE DE DONNÉES
-
-On part d'un fichier d'intention décrivant les AS, les relations inter-AS, les routers, et les connexion entre les interfaces de chauqe router.
 
 ### CRÉATION DES CLASSES 
 - ouverture / lecture du fichier d'intention
