@@ -29,7 +29,7 @@
 
 ### Fonctions
 
-### générer_plan_adressage
+#### générer_plan_adressage
 
 * **`charger_json_en_dict(chemin_fichier)`** : Charge un fichier JSON depuis le disque et le retourne sous forme de dictionnaire Python, avec gestion des erreurs de lecture.
 
