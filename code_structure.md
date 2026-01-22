@@ -29,7 +29,7 @@
 
 ### Fonctions
 
-### `générer_plan_adressage`
+### générer_plan_adressage
 
 * **`charger_json_en_dict(chemin_fichier)`** : Charge un fichier JSON depuis le disque et le retourne sous forme de dictionnaire Python, avec gestion des erreurs de lecture.
 
@@ -43,7 +43,7 @@
 
 * **`generer_plan_adressage(intention)`** : Construit le plan d’adressage IPv6 final à partir de l’intention et des configurations générées, prêt à être exporté ou utilisé par des générateurs de configuration.
 
-#### `generate_classes.py`
+#### generate_classes.py
 
 * **`find_local_path()`** : Détermine et retourne le chemin absolu du dossier où se trouve le script.
 
@@ -57,7 +57,7 @@
 
 * **`generate_AS(as_relations, intent)`** : Crée un objet `AS` et renseigne ses relations (peers, providers, clients) à partir du fichier d’intention.
 
-#### `write_config.py`
+#### write_config.py
 
 * **`write_config(router, out_file, router_list, as_list)`** : Génère et écrit la configuration complète d’un routeur dans un fichier `.cfg`, en appelant toutes les autres fonctions d'écriture (vois ensuite)
 
