@@ -78,7 +78,7 @@ L'intent file est un fichier json contenant en prremier les relations inter-AS d
 
 ## Utilisation
 
-Une fois le dossier organisé comme décrit plus haut, et l'intent file écrit, il suffit d'exécuter `main.py` depuis `./projet/code` pour effectuer l'addressage, générer les fichiers et les placer correctement. Attention, si le réseau du GNS3 ne correspond pas à celui décrit dans l'intent file, les fichiers de config seront générés comme décrits dans l'intent file, mais ne pourront pas être placé correctement et le drag and drop sera interrompu. 
+Une fois le dossier organisé comme décrit plus haut, et l'intent file écrit, il suffit d'exécuter `main.py` depuis `./projet/code` pour effectuer l'addressage, générer les fichiers et les placer correctement. Si on execute depuis un Windows, exécuter `main_windows.py` de la même manière. Attention, si le réseau du GNS3 ne correspond pas à celui décrit dans l'intent file, les fichiers de config seront générés comme décrits dans l'intent file, mais ne pourront pas être placé correctement et le drag and drop sera interrompu. 
 
 ## Structure du code 
 
@@ -99,3 +99,8 @@ Une fois le dossier organisé comme décrit plus haut, et l'intent file écrit, 
     - création d'un ficher `RX.gns` (dans le répertoire courant)
     - écrituture de la configuration des interfaces à partir des classes `Router` et `Interfaces`
     - écriture des configuration  BGP à partir de `AS`, `Router` et `Interfaces`.
+
+### Drag and drop : `drag_n_drop_bot.py`
+
+- parcours de l'arborescence de `../network/` pour récupérer les noms des dossiers contenant les fichiers de configuration des routeurs.
+- 
