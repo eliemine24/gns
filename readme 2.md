@@ -1,4 +1,4 @@
-# GNS - Network Configuration Generator
+# Projet GNS Groupe 20
 
 Un projet Python permettant de générer automatiquement les fichiers de configuration pour des routeurs dans GNS3 à partir d'un fichier d'intention en `.json`.
 
