@@ -14,7 +14,7 @@ if os.name == 'nt':
     LPATH = find_local_path() +"\\"                        # chemin du script
     HPATH = LPATH.rstrip('\\').rsplit('\\', 1)[0]           # chemin du projet
     MAIN_DEST = HPATH + "\\project-files\\dynamips"         # destination générale des .cfg
-    FILE_NAME = "code\\test.json"
+    FILE_NAME = "code\\intent_file_2_encore_plus_gros_reseau.json"
     INTENT = json_to_dict(FILE_NAME)             # fichier d'intention
     PROJECT_NAME = "projet_test"#str(input("Nom du dossier contenant le projet : "))
 
@@ -30,13 +30,10 @@ print("--- pathes ---")
 print(f"LPATH : {LPATH}")
 print(f"HPATH : {HPATH}\n")
 
-#generer_plan_adressage(INTENT)
+generer_plan_adressage(INTENT)
 
 # génération des routeurs et interfaces
-if os.name == 'nt':
-    router_list, as_list = generate_network_classes(LPATH + FILE_NAME[5:])
-else:
-    router_list, as_list = generate_network_classes("test.json")
+router_list, as_list = generate_network_classes("test.json")
 
 # affichage 
 """
