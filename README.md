@@ -23,16 +23,20 @@ Léa Danober, Robin Jenny, Rémi Durand, Élie Gautier
 ### Arborescence
 
 ```pgsql
-projet/
-├── code/
-│   └── intent_file.json
-│   └── main.py
-│   └── other script
-└── network/
-    ├── network.gns3
-    └── project-files/
-		├── images/
-		└── dynamips/ routers config folders
+gns/
+├── code/                           # Code source principal
+│   ├── intent_file.json            # Fichiers d'intention réseau
+│   ├── main.py                     # Point d'entrée du programme
+│   ├── router.py                   # Classe Router
+│   ├── interface.py                # Classe Interface
+│   ├── AS.py                       # Classe AS
+│   ├── generate_classes.py         # Génération des classes à partir du JSON
+│   ├── write_config.py             # Génération des fichiers .cfg
+│   ├── generer_plan_adressage.py   # Génération du plan d'adressage
+│   └── drag_n_drop_bot.py          # Placement automatique dans GNS3
+├── Projet_test/                    # Dossier du projet GNS3
+│   └── Projet_GNS.gns3             # Projet GNS3
+└── 
 ```
 
 ### Intent file 
@@ -78,29 +82,44 @@ L'intent file est un fichier json contenant en prremier les relations inter-AS d
 
 ## Utilisation
 
-Une fois le dossier organisé comme décrit plus haut, et l'intent file écrit, il suffit d'exécuter `main.py` depuis `./projet/code` pour effectuer l'addressage, générer les fichiers et les placer correctement. Si on execute depuis un Windows, exécuter `main_windows.py` de la même manière. Attention, si le réseau du GNS3 ne correspond pas à celui décrit dans l'intent file, les fichiers de config seront générés comme décrits dans l'intent file, mais ne pourront pas être placé correctement et le drag and drop sera interrompu. 
+### Prérequis
+- Python 3.x
+- GNS3 installé et configuré
+
+### Exécution
+
+1. Écrire l'intent file correspondant au réseau
+
+2. Modifier `main.py` pour pointer vers votre fichier :
+```python
+FILE_NAME = "intent_file.json"
+PROJECT_NAME = "nom_de_votre_projet"
+```
+3. Depuis `gns/code/`, executer `main.py` sous Linux, et `main_windows.py` sous windows.
+
+_Attention, si le réseau du GNS3 ne correspond pas à celui décrit dans l'intent file, les fichiers de config seront générés comme décrits dans l'intent file, mais ne pourront pas être placé correctement et le drag and drop sera interrompu._ 
 
 ## Structure du code 
 
-### Addressage : `generer_plan_adressage.py`
+1. Addressage : `generer_plan_adressage.py`
 
 - lecture de l'intent file,
 - affectation d'adresses IPv6 à chaque interface (physique et loopback)
 - écriture d'un fichier `test.json` décrivant le réseau et toutes les adresses
 
-### Génération de classes : `generate_classes.py`
+2. Génération de classes : `generate_classes.py`
 
 - lecture de `test.json`
 - génération des classes AS, Router et Interface pour l'écriture des fichiers de config plus tard. 
 
-### Écriture des configurations : `write_config.py`
+3. Écriture des configurations : `write_config.py`
 
 - pour chaque router X : 
     - création d'un ficher `RX.gns` (dans le répertoire courant)
     - écrituture de la configuration des interfaces à partir des classes `Router` et `Interfaces`
     - écriture des configuration  BGP à partir de `AS`, `Router` et `Interfaces`.
 
-### Drag and drop : `drag_n_drop_bot.py`
+4. Drag and drop : `drag_n_drop_bot.py`
 
 - parcours de l'arborescence de `../network/` pour récupérer les noms des dossiers contenant les fichiers de configuration des routeurs.
 - 
