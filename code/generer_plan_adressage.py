@@ -103,26 +103,46 @@ def initialiser_topologie(donnees_intent):
 
     # Récupérer la liste des systèmes autonomes
     as_list = list(structure.keys())
-    # Adresse IPv6 de base pour les AS (0x1111 en héxa)
+    # Adresse IPv6 de base pour les AS (0x1111 en héxa) - utilisée si pas de plage spécifiée
     base_ip = 0x1111 
+    
+    # Récupérer la data Intent pour les configurations globales
+    intent_data = donnees_intent.get("Intent", {})
     
     # Créer une entrée AS_CONFIG pour chaque système autonome
     for i, id_as in enumerate(as_list):
-        # Générer un préfixe IPv6 unique pour cet AS
-        prefixe_str = f"{hex(base_ip + i)[2:]}::/48"
+        as_data = structure[id_as]
+        
+        # Vérifier si une plage d'adressage est spécifiée pour cet AS
+        if "ADDRESSING_RANGE" in as_data:
+            # Utiliser la plage spécifiée dans le JSON
+            prefixe_str = as_data["ADDRESSING_RANGE"]
+            print(f"[+] AS {id_as}: Utilisation de la plage d'adressage spécifiée: {prefixe_str}")
+        else:
+            # Générer un préfixe IPv6 unique pour cet AS
+            prefixe_str = f"{hex(base_ip + i)[2:]}::/48"
+            print(f"[+] AS {id_as}: Génération automatique de la plage: {prefixe_str}")
+        
         reseau_principal = ipaddress.IPv6Network(prefixe_str)
         
         # Stocker les informations du réseau principal et ses sous-réseaux
         AS_CONFIG[id_as] = {
-            "NOM_AS": structure[id_as].get("AS_NAME"),
-            "PROTOCOLE": structure[id_as].get("PROTOCOL"),
+            "NOM_AS": as_data.get("AS_NAME"),
+            "PROTOCOLE": as_data.get("PROTOCOL"),
             "RESEAU": reseau_principal,
             "SOUS_RESEAUX": list(reseau_principal.subnets(new_prefix=64)),  # Découper en /64
-            "ROUTEURS": list(structure[id_as].get("ROUTERS", {}).keys())
+            "ROUTEURS": list(as_data.get("ROUTERS", {}).keys())
         }
     
     # Créer une configuration pour les liaisons inter-AS (eBGP)
-    prefixe_ebgp_str = "9999::/48" 
+    # Vérifier si une plage eBGP est spécifiée globalement
+    if "EBGP_ADDRESSING_RANGE" in intent_data:
+        prefixe_ebgp_str = intent_data["EBGP_ADDRESSING_RANGE"]
+        print(f"[+] Liaisons eBGP: Utilisation de la plage spécifiée: {prefixe_ebgp_str}")
+    else:
+        prefixe_ebgp_str = "9999::/48"
+        print(f"[+] Liaisons eBGP: Génération automatique de la plage: {prefixe_ebgp_str}")
+    
     reseau_ebgp = ipaddress.IPv6Network(prefixe_ebgp_str)
     EBGP_CONFIG["INTER_AS"] = {
         "RESEAU": reseau_ebgp,

@@ -111,6 +111,7 @@ class AS():
         "AS1": {
             "AS_NAME": "1111",
             "PROTOCOL": "RIP",
+            "ADDRESSING_RANGE": "1111::/48",
             "ROUTERS": {
                 "R1": {
                     "ROUTER_ID": "1.1.1.1",
