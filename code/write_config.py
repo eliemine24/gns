@@ -297,11 +297,11 @@ def write_ipv6_address_family(conf, router, router_list, as_list):
         
         # Check relationship: is current router a PROVIDER, PEER, or CLIENT of neighbor AS?
         if router.AS_name in as_router_voisin.providers:
-            conf.write(f"""  neighbor {voisin.split('/', 1)[0]} route-map client out\n""")
+            conf.write(f"""  neighbor {voisin.split('/', 1)[0]} route-map client in\n""")
         elif router.AS_name in as_router_voisin.peers:
-            conf.write(f"""  neighbor {voisin.split('/', 1)[0]} route-map peer out\n""")
+            conf.write(f"""  neighbor {voisin.split('/', 1)[0]} route-map peer in\n""")
         elif router.AS_name in as_router_voisin.clients:
-            conf.write(f"""  neighbor {voisin.split('/', 1)[0]} route-map provider out\n""")
+            conf.write(f"""  neighbor {voisin.split('/', 1)[0]} route-map provider in\n""")
         
     conf.write(""" exit-address-family
 !
