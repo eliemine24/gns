@@ -101,6 +101,8 @@ _Attention, si le réseau du GNS3 ne correspond pas à celui décrit dans l'inte
 
 ## Structure du code 
 
+Voir la structure complète plus détaillée dans [code_structure.md](./code_structure.md)
+
 ### Addressage : `generer_plan_adressage.py`
 
 - lecture de l'intent file,

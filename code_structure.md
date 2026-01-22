@@ -1,22 +1,4 @@
-# GNS - Network Automation Project
-
-Léa Danober, Robin Jenny, Rémi Durand, Élie Gautier
-
-## Description 
-
-**Ressources** : 
-
-- architecture déjà prête (routeurs, interfaces, liens)
-- arborescence GNS (`./project_name/project-files/dynamips/router_ids/configs/iX_startup_config.cfg`)
-- fichier d'intention décrivant le réseau : AS, routeurs, interfaces des routers et liens entre eux. Pas d'adresses prédéfinies
-
-**Objectifs du script** : 
-
-- lire le fichier d'intention et affecter des adresses (IPv6) aux interfaces des routeurs (GigabitEthernet et Loopback pour BGP)
-- écrire les fichiers de configuration des routeurs (fichier `.cfg`) pour que le réseau fonctionne dès l'ouverture du fichier `.gns3` simulant le réseau
-- drag and drop bot : placer les fichiers de configuration correctement dans l'arborescence du projet GNS.
-
-**langage** : `python`
+# CODE STRUCTURE
 
 ### CRÉATION DES CLASSES 
 - ouverture / lecture du fichier d'intention
@@ -39,10 +21,6 @@ Léa Danober, Robin Jenny, Rémi Durand, Élie Gautier
 - liste des routers par protocole
 - router et règles bgp
 
-
-
-## À CODER
-
 ### Classes
 
 - `router` : name, interfaces_number, interfaces_list, protocols_list
@@ -51,22 +29,52 @@ Léa Danober, Robin Jenny, Rémi Durand, Élie Gautier
 
 ### Fonctions
 
-- `find_local_path()` : trouve l'emplacement du programme et l'exporte
-- `json_to_dict(in_file)` : génère un dictionnaire à partir du fhcier d'intention
+### `générer_plan_adressage`
 
-- `generate_network_classes(int_file)` : lit le fichier d'intention et crée toutes les classes nécessaires pour écrire les configurations
-    - `generate_router(int_dict)` : génère un router à partir des infos qu'on lui donne
-        - `generate_interfaces(int_dict, router)` génère les classes `interface` du router
+* **`charger_json_en_dict(chemin_fichier)`** : Charge un fichier JSON depuis le disque et le retourne sous forme de dictionnaire Python, avec gestion des erreurs de lecture.
 
-- `write_config(router, path_to_router, out_file)` : fonction générale qui écrit une configuration pour un router dans un fichier cfg, contient d'autres fonctions
-    - `write_header(router)` : écrit l'en-tête de config
-    - `write_interfaces_config(router)` : gère la configuration de tous les interfaces du router (en fonction des protocoles)
-        - `write_loopback(interface)` : écrit la partie loopback
-        - `write_FE(interface)` : écrit la configuration de fast ethernet
-        - `write_GE(interface)` : pareil pour GE
-    - `write_bgp_config` : 
-        - find a way to write this fckn bgp table 
-    - `write_ipv4_address_family` écrit la config @family_ipv4 (non utilisé mais probablement à écrire quand même)
-    - `write_ipv6_address_family` : écrit la config ipv6 family (voir fichier de config)
-        - problème pour plus tard
-- `drag_and_drop_bot(cfg_file, out_path)` : place le fichier généré dans la config gns
+* **`sauvegarder_dict_en_json(dictionnaire, chemin_destination)`** : Sauvegarde un dictionnaire Python dans un fichier JSON formaté (indenté, UTF-8), en affichant le statut de l’opération.
+
+* **`extraire_num(nom)`** : Extrait et retourne le nombre présent dans une chaîne de caractères (utile pour identifier des numéros de routeurs ou d’interfaces).
+
+* **`initialiser_topologie(donnees_intent)`** : Analyse le fichier d’intention et initialise les structures globales `AS_CONFIG` et `EBGP_CONFIG` avec les plages IPv6, sous-réseaux et routeurs de chaque AS.
+
+* **`creer_registre_dynamique(donnees_intent)`** : Génère un registre d’adressage IPv6 en attribuant dynamiquement des adresses aux interfaces et loopbacks des routeurs, en distinguant les liens intra-AS et inter-AS (eBGP).
+
+* **`generer_plan_adressage(intention)`** : Construit le plan d’adressage IPv6 final à partir de l’intention et des configurations générées, prêt à être exporté ou utilisé par des générateurs de configuration.
+
+#### `generate_classes.py`
+
+* **`find_local_path()`** : Détermine et retourne le chemin absolu du dossier où se trouve le script.
+
+* **`json_to_dict(in_file)`** : Lit un fichier JSON et le convertit en dictionnaire Python.
+
+* **`generate_network_classes(int_file)`** : Lit le fichier d’intention réseau (fichier généré au préalable par `generer_plan_adressage.py` et génère l’ensemble des objets `Router` et `AS` nécessaires à partir de sa structure.
+
+* **`generate_router(router_name, router_info)`** : Crée et retourne un objet `Router` à partir des informations décrivant un routeur (nom, ID, interfaces).
+
+* **`generate_interface(interface_name, interface_info, as_obj)`** : Crée et configure un objet `Interface` à partir des informations d’interface (adresse, voisins, protocoles, coût).
+
+* **`generate_AS(as_relations, intent)`** : Crée un objet `AS` et renseigne ses relations (peers, providers, clients) à partir du fichier d’intention.
+
+#### `write_config.py`
+
+* **`write_config(router, out_file, router_list, as_list)`** : Génère et écrit la configuration complète d’un routeur dans un fichier `.cfg`, en appelant toutes les autres fonctions d'écriture (vois ensuite)
+
+* **`write_header(conf, router)`** : Écrit l’en-tête de la configuration Cisco du routeur (version, services, hostname, IPv6, paramètres globaux).
+
+* **`write_end(conf, router)`** : Écrit la fin de la configuration, incluant la configuration du protocole de routage intra-AS (OSPF ou RIP) et les paramètres de lignes (console, vty).
+
+* **`write_interfaces_config(conf, router)`** : Parcourt toutes les interfaces du routeur et appelle la fonction appropriée selon leur type (Loopback, FastEthernet, GigabitEthernet).
+
+* **`write_loopback0(conf, interface)`** : Écrit la configuration d’une interface Loopback0, avec l’adressage IPv6 et l’activation du protocole de routage associé (OSPF ou RIP).
+
+* **`write_FE(conf, interface)`** : Écrit la configuration d’une interface FastEthernet, incluant l’adressage IPv6, OSPF/RIP et les coûts OSPF éventuels.
+
+* **`write_GE(conf, interface)`** : Écrit la configuration d’une interface GigabitEthernet, similaire à FastEthernet mais adaptée à ce type d’interface.
+
+* **`write_bgp_config(conf, router, router_list)`** : Écrit la configuration BGP globale du routeur, configure les voisins iBGP via les loopbacks et les voisins eBGP sur les interfaces de bordure.
+
+* **`write_ipv4_address_family(conf)`** : Écrit la section BGP `address-family ipv4`, sans activation de routes IPv4.
+
+* **`write_ipv6_address_family(conf, router, router_list, as_list)`** : Écrit la section BGP `address-family ipv6`, configure les réseaux annoncés, les voisins iBGP/eBGP, le `next-hop-self` et les politiques de préférence locale selon les relations AS (client, peer, provider).
