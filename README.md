@@ -78,4 +78,24 @@ L'intent file est un fichier json contenant en prremier les relations inter-AS d
 
 ## Utilisation
 
-Une fois le dossier organisé comme décrit plus haut, et l'intentfile écrit 
+Une fois le dossier organisé comme décrit plus haut, et l'intent file écrit, il suffit d'exécuter `main.py` depuis `./projet/code` pour effectuer l'addressage, générer les fichiers et les placer correctement. Attention, si le réseau du GNS3 ne correspond pas à celui décrit dans l'intent file, les fichiers de config seront générés comme décrits dans l'intent file, mais ne pourront pas être placé correctement et le drag and drop sera interrompu. 
+
+## Structure du code 
+
+### Addressage : `generer_plan_adressage.py`
+
+- lecture de l'intent file,
+- affectation d'adresses IPv6 à chaque interface (physique et loopback)
+- écriture d'un fichier `test.json` décrivant le réseau et toutes les adresses
+
+### Génération de classes : `generate_classes.py`
+
+- lecture de `test.json`
+- génération des classes AS, Router et Interface pour l'écriture des fichiers de config plus tard. 
+
+### Écriture des configurations : `write_config.py`
+
+- pour chaque router X : 
+    - création d'un ficher `RX.gns` (dans le répertoire courant)
+    - écrituture de la configuration des interfaces à partir des classes `Router` et `Interfaces`
+    - écriture des configuration  BGP à partir de `AS`, `Router` et `Interfaces`.
