@@ -42,7 +42,7 @@ def place_file(file, project_path, gns_path, dest_router_folder, final_file):
     #On crée des chemins proprement pour ne pas avoir de propblèmes si on passe de Linux à Windows
     source = os.path.join(project_path, file)
     destination = os.path.join(gns_path, "project-files","dynamips", dest_router_folder, "configs", final_file)
-    shutil.copy(source, destination)
+    shutil.move(source, destination)
 
 
 # Lit le dictionnaire de find_repository_names et puis place les bons fichiers de config dans le bons dossiers
