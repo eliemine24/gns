@@ -216,7 +216,7 @@ def generer_plan_adressage(intention):
     # Générer le registre d'adressage (qui contient tous les adresses attribuées)
     registre = creer_registre_dynamique(intention)
     # Structure pour stocker le résultat final
-    resultat = {"Intent": {}, "Structure": {}}
+    resultat = {"Intent": intention.get("Intent", {}), "Structure": {}}
 
     # Parcourir chaque système autonome
     for id_as, info_as in AS_CONFIG.items():
